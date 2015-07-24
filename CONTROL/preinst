@@ -9,12 +9,3 @@ echo "create Backup .../etc/tuxbox/config/"
 echo "create Backup .../usr/keys/"
 tar -cf /etc/tuxbox/config/backup_by_oscamsmartcard.tar.gz /etc/tuxbox/config 2>/dev/null
 tar -cf /usr/keys/backup_by_oscamsmartcard.tar.gz /usr/keys  2>/dev/null
-
-#echo "delete old oscam files"
-#rm /etc/tuxbox/config/oscam.* 2>/dev/null
-#rm /usr/keys/oscam.* 2>/dev/null
-
-#echo "deinstall old oscamsmartcard"
-#opkg remove enigma2-plugin-softcams-oscamsmartcard 2>/dev/null
-#opkg remove enigma2-plugin-softcams-oscamsmartcard-emu 2>/dev/null
-#echo "**************************************************"
