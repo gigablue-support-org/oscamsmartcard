@@ -1,0 +1,14 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = JSC
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+caid                          = 0500
+detect                        = cd
+mhz                           = 369
+cardmhz                       = 369
+ident                         = 0500:042400
+group                         = 4
+emmcache                      = 1,3,2
+

@@ -1,0 +1,14 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = SRG_V5
+protocol                      = mouse
+device                        = /dev/ttyUSB1
+caid                          = 0500
+ident                         = 0500:050800
+detect                        = cd
+mhz                           = 480
+cardmhz                       = 480
+group                         = 1
+emmcache                      = 1,3,2
+

@@ -1,0 +1,16 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = ORF_ICE_irdeto
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+caid                          = 0648
+rsakey                        = DF57B08C0F13E67BD17AD37EAAF4EAA25393F8A0EFE8ACE6708AAF97C985CBA8A6C13826963BD3092EB9FC72F773A430724706AA5E1D14E1747842D32069A12D
+force_irdeto                  = 1
+boxkey                        = 1122334455667788
+mhz                           = 600
+cardmhz                       = 600
+detect                        = cd
+group                         = 1
+emmcache                      = 1,1,2
+

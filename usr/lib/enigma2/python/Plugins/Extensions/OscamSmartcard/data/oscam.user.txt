@@ -1,0 +1,18 @@
+
+[account]
+user                          = mybox
+uniq                          = 3
+keepalive                     = 1
+au                            = 1
+betatunnel                    = 1833.FFFF:1702
+group                         = 1
+cccmaxhops                    = 15
+cccreshare                    = 15
+cccignorereshare              = 1
+
+[account]
+user                          = cccamclient
+pwd                           = cccampassword
+description                   = Example Linie for CCcam Clientes-> C: <this IP> 16000 cccamclient cccampassword no {0:0:1}
+uniq                          = 3
+group                         = 1

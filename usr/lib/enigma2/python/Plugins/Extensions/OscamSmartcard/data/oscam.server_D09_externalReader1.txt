@@ -1,0 +1,16 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = D09
+protocol                      = mouse
+device                        = /dev/ttyUSB1
+caid                          = 1834
+nagra_read                    = 1
+boxkey                        = 6660A9AE55A4847B
+rsakey                        = 8A54468867159C1188D13ACE7DF348FA08BDF8BE33F1B2F72F74FBCD184C825519E517E3494A6DD8CF046630456111F952979DECCFF5176D890AE93F4E267711
+detect                        = cd
+mhz                           = 368
+cardmhz                       = 368
+ident                         = 1834:000000
+group                         = 1
+emmcache                      = 1,3,10

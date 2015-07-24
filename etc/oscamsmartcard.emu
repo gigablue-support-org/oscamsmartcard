@@ -1,0 +1,4 @@
+emuname = OscamSmartcard 
+binname = oscam_oscamsmartcard
+startcam = /usr/bin/oscam_oscamsmartcard -c /usr/keys
+stopcam = killall -9 oscam_oscamsmartcard

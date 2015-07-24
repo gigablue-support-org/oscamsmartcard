@@ -1,0 +1,9 @@
+
+[reader]
+label                         = Softcam
+protocol                      = constcw
+device                        = /usr/keys/SoftCam.Key
+caid                          = 0500
+ident                         = 0500:023800
+group                         = 1
+audisabled                    = 1

@@ -1,0 +1,325 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: OscamSmartcard\n"
+"POT-Creation-Date: 2013-10-20 17:38+0100\n"
+"PO-Revision-Date: 2013-10-20 17:56+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: D:\\OscamSmartcard\n"
+
+#: D:\OscamSmartcard/plugin.py:47
+msgid "Python SoftCamstart (openATV)"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:48
+msgid "Script SoftCamstart (openMips)"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:53
+msgid "/usr/keys/ (openATV)"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:54
+msgid "/etc/tuxbox/config/ (openMips)"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:55
+msgid "/tmp/oscamsmartcard (debug)"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:59
+msgid "83"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:60
+msgid "8000"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:64 D:\OscamSmartcard/plugin.py:87
+#: D:\OscamSmartcard/plugin.py:110 D:\OscamSmartcard/plugin.py:133
+msgid "Sky V13"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:65 D:\OscamSmartcard/plugin.py:88
+#: D:\OscamSmartcard/plugin.py:111 D:\OscamSmartcard/plugin.py:134
+msgid "Sky V14"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:66 D:\OscamSmartcard/plugin.py:89
+#: D:\OscamSmartcard/plugin.py:112 D:\OscamSmartcard/plugin.py:135
+msgid "Sky S02"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:67 D:\OscamSmartcard/plugin.py:90
+#: D:\OscamSmartcard/plugin.py:113 D:\OscamSmartcard/plugin.py:136
+msgid "HD+ HD01 white"
+msgstr "HD+ HD01 weiß"
+
+#: D:\OscamSmartcard/plugin.py:68 D:\OscamSmartcard/plugin.py:91
+#: D:\OscamSmartcard/plugin.py:114 D:\OscamSmartcard/plugin.py:137
+msgid "HD+ HD02 black"
+msgstr "HD+ HD02 schwarz"
+
+#: D:\OscamSmartcard/plugin.py:69 D:\OscamSmartcard/plugin.py:92
+#: D:\OscamSmartcard/plugin.py:115 D:\OscamSmartcard/plugin.py:138
+msgid "I02 Beta"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:70 D:\OscamSmartcard/plugin.py:93
+#: D:\OscamSmartcard/plugin.py:116 D:\OscamSmartcard/plugin.py:139
+msgid "I12 Beta"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:71 D:\OscamSmartcard/plugin.py:94
+#: D:\OscamSmartcard/plugin.py:117 D:\OscamSmartcard/plugin.py:140
+msgid "I12 Nagra"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:72 D:\OscamSmartcard/plugin.py:95
+#: D:\OscamSmartcard/plugin.py:118 D:\OscamSmartcard/plugin.py:141
+msgid "KabelBW V23"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:73 D:\OscamSmartcard/plugin.py:96
+#: D:\OscamSmartcard/plugin.py:119 D:\OscamSmartcard/plugin.py:142
+msgid "ORF ICE"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:74 D:\OscamSmartcard/plugin.py:97
+#: D:\OscamSmartcard/plugin.py:120 D:\OscamSmartcard/plugin.py:143
+msgid "SRG V2"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:75 D:\OscamSmartcard/plugin.py:98
+#: D:\OscamSmartcard/plugin.py:121 D:\OscamSmartcard/plugin.py:144
+msgid "SRG V4"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:76 D:\OscamSmartcard/plugin.py:99
+#: D:\OscamSmartcard/plugin.py:122 D:\OscamSmartcard/plugin.py:145
+msgid "SRG V5"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:77 D:\OscamSmartcard/plugin.py:100
+#: D:\OscamSmartcard/plugin.py:123 D:\OscamSmartcard/plugin.py:146
+msgid "UnityMedia UM01"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:78 D:\OscamSmartcard/plugin.py:101
+#: D:\OscamSmartcard/plugin.py:124 D:\OscamSmartcard/plugin.py:147
+msgid "UnityMedia UM02"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:79 D:\OscamSmartcard/plugin.py:102
+#: D:\OscamSmartcard/plugin.py:125 D:\OscamSmartcard/plugin.py:148
+msgid "UnityMedia UM03"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:80 D:\OscamSmartcard/plugin.py:103
+#: D:\OscamSmartcard/plugin.py:126 D:\OscamSmartcard/plugin.py:149
+msgid "MTV"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:81 D:\OscamSmartcard/plugin.py:104
+#: D:\OscamSmartcard/plugin.py:127 D:\OscamSmartcard/plugin.py:150
+msgid "HalloTV"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:82 D:\OscamSmartcard/plugin.py:105
+#: D:\OscamSmartcard/plugin.py:128 D:\OscamSmartcard/plugin.py:151
+msgid "Redlight Elite HD - Viaccess"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:83 D:\OscamSmartcard/plugin.py:106
+#: D:\OscamSmartcard/plugin.py:129 D:\OscamSmartcard/plugin.py:152
+msgid "FreeX TV - Viaccess"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:84 D:\OscamSmartcard/plugin.py:107
+#: D:\OscamSmartcard/plugin.py:130 D:\OscamSmartcard/plugin.py:153
+msgid "None"
+msgstr "Keine"
+
+#: D:\OscamSmartcard/plugin.py:157
+msgid "Yes"
+msgstr "Ja"
+
+#: D:\OscamSmartcard/plugin.py:158
+msgid "No"
+msgstr "Nein"
+
+#: D:\OscamSmartcard/plugin.py:203
+msgid "Select SoftCamstart:"
+msgstr "SoftCamstart auswählen:"
+
+#: D:\OscamSmartcard/plugin.py:203
+msgid ""
+"INFORMATION: Select SoftCamstart\n"
+"\n"
+"Be sure which SoftCamstart (Image) you select!"
+msgstr ""
+"INFORMATION: SoftCamstart auswählen\n"
+"\n"
+"Wähle das richtige Image für den SoftCamstart aus!"
+
+#: D:\OscamSmartcard/plugin.py:204
+msgid "OScam configuration path:"
+msgstr "Pfad zur OScam Konfiguration:"
+
+#: D:\OscamSmartcard/plugin.py:204
+msgid ""
+"INFORMATION: OScam configuration path\n"
+"\n"
+"Be sure which configuration path you select!\n"
+"Correct path is necessary for a few plugins or image functions."
+msgstr ""
+"INFORMATION: Pfad zur OScam Konfiguration\n"
+"\n"
+"Wähle den richtigen Pfad für die OScam Konfigurationsdateien!\n"
+"Der richtige Pfad ist für einige Plugins oder Image-Funktionen wichtig."
+
+#: D:\OscamSmartcard/plugin.py:205
+msgid "Select OScam WebifPort:"
+msgstr "OScam WebifPort auswählen:"
+
+#: D:\OscamSmartcard/plugin.py:205
+msgid ""
+"INFORMATION: Select OScam WebifPort\n"
+"\n"
+"Oscam Webif will be accessible on the selected port.\n"
+"e.g. http:\\IPOFYOURBOX:83"
+msgstr ""
+"INFORMATION: OScam WebifPort auswählen\n"
+"\n"
+"OScam Webif wird auf dem ausgewählten Port aufrufbar sein.\n"
+"z.B. http:\\IPDEINERBOX:83"
+
+#: D:\OscamSmartcard/plugin.py:206
+msgid "Internal Reader /dev/sci0:"
+msgstr "Interner Kartenleser /dev/sci0:"
+
+#: D:\OscamSmartcard/plugin.py:206
+msgid ""
+"INFORMATION: Internal Reader /dev/sci0\n"
+"\n"
+"All STB's having only one cardslot.\n"
+"On STB's having two cardslots it is mostly the lower cardslot."
+msgstr ""
+"INFORMATION: Interner Kartenleser /dev/sci0\n"
+"\n"
+"Alle STB's die nur einen Kartenleser haben.\n"
+"Auf STB's die zwei Kartenleser haben, ist es meist der untere Kartenleser."
+
+#: D:\OscamSmartcard/plugin.py:207
+msgid "Internal Reader /dev/sci1:"
+msgstr "Interner Kartenleser /dev/sci1:"
+
+#: D:\OscamSmartcard/plugin.py:207
+msgid ""
+"INFORMATION: Internal Reader /dev/sci1\n"
+"\n"
+"On STB's having two cardslots it is mostly the upper cardslot."
+msgstr ""
+"INFORMATION: Interner Kartenleser /dev/sci1\n"
+"\n"
+"Auf STB's die zwei Kartenleser haben, ist es meist der obere Kartenleser."
+
+#: D:\OscamSmartcard/plugin.py:208
+msgid "External Reader /dev/ttyUSB0:"
+msgstr "Externer Kartenleser /dev/ttyUSB0:"
+
+#: D:\OscamSmartcard/plugin.py:208
+msgid ""
+"INFORMATION: External Reader /dev/ttyUSB0\n"
+"\n"
+"This Reader can be used to configure for example a connected easymouse."
+msgstr ""
+"INFORMATION: Externer Kartenleser /dev/ttyUSB0\n"
+"\n"
+"Dieser Reader kann benutzt werden um zum Beispiel eine angeschlossene "
+"Easymouse zu konfigurieren."
+
+#: D:\OscamSmartcard/plugin.py:209
+msgid "External Reader /dev/ttyUSB1:"
+msgstr "Externer Kartenleser /dev/ttyUSB1:"
+
+#: D:\OscamSmartcard/plugin.py:209
+msgid ""
+"INFORMATION: External Reader /dev/ttyUSB1\n"
+"\n"
+"This Reader can be used to configure for example a second connected "
+"easymouse."
+msgstr ""
+"INFORMATION: Externer Kartenleser /dev/ttyUSB1\n"
+"\n"
+"Dieser Reader kann benutzt werden um zum Beispiel eine zweite angeschlossene "
+"Easymouse zu konfigurieren."
+
+#: D:\OscamSmartcard/plugin.py:210
+msgid "Enable EMU Reader:"
+msgstr "EMU Reader aktivieren:"
+
+#: D:\OscamSmartcard/plugin.py:210
+msgid ""
+"INFORMATION: Enable EMU Reader\n"
+"\n"
+"Enabling this Reader, OscamSmartcard will use Oscam Dmod as running Oscam "
+"(instead of regular OScam SVN XXXX).\n"
+"OscamSmartcard does NOT provide the required file SoftCam.Key!"
+msgstr ""
+"INFORMATION: Enable EMU Reader\n"
+"\n"
+"Wird dieser Reader aktiviert, benutzt OscamSmartcard die Oscam Dmod als zu "
+"startende Oscam (anstatt der regulären OScam SVN 89XX).\n"
+"OscamSmartcard liefert die benötigte Datei SoftCam.Key NICHT mit!"
+
+#: D:\OscamSmartcard/plugin.py:260
+msgid "Do you really want to reboot now?"
+msgstr "Willst Du wirklich neustarten?"
+
+#: D:\OscamSmartcard/plugin.py:261 D:\OscamSmartcard/plugin.py:301
+msgid "Restart STB"
+msgstr "STB Neustarten"
+
+#: D:\OscamSmartcard/plugin.py:264
+msgid "Information"
+msgstr ""
+
+#: D:\OscamSmartcard/plugin.py:300
+msgid ""
+"Your STB needs a restart to apply settings and start OscamSmartcard.\n"
+"Do you want to Restart you STB now?"
+msgstr ""
+"Deine STB benötigt einen Neustart um die Einstellungen anzuwenden und um "
+"OscamSmartcard zu starten.\n"
+"Möchtest Du Deine STB jetzt neustarten?"
+
+#: D:\OscamSmartcard/plugin.py:325
+msgid "Error creating oscam.server!"
+msgstr "Fehler beim erstellen von oscam.server!"
+
+#: D:\OscamSmartcard/plugin.py:348
+msgid "Error creating oscam.dvbapi!"
+msgstr "Fehler beim erstellen von oscam.dvbapi!"
+
+#: D:\OscamSmartcard/plugin.py:375
+msgid "Error creating oscam.user!"
+msgstr "Fehler beim erstellen von oscam.user!"
+
+#: D:\OscamSmartcard/plugin.py:395
+msgid "Error creating oscam.conf!"
+msgstr "Fehler beim erstellen von oscam.conf!"
+
+#: D:\OscamSmartcard/plugin.py:459
+msgid "Error creating oscam camstart files!"
+msgstr "Fehler beim erstellen des Camstarts!"
+
+#: D:\OscamSmartcard/plugin.py:490
+msgid "Configuration tool for OScam"
+msgstr "Konfigurationstool für OScam"

@@ -1,0 +1,15 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = I12
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+group                         = 1
+caid                          = 1722
+ident                         = 1722:000000
+boxkey                        = 1122334455667788
+mhz                           = 600
+cardmhz                       = 600
+emmcache                      = 1,3,2
+detect                        = CD
+

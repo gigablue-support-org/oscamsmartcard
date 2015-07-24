@@ -1,0 +1,15 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = ORF
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+caid                          = 0D05
+ident                         = 0D05:000000,000004,00000C,000010,000008
+mhz                           = 368
+cardmhz                       = 368
+detect                        = cd
+ecmwhitelist                  = 0D05:9c
+group                         = 1
+emmcache                      = 1,1,2
+

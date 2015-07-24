@@ -1,0 +1,14 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = KabelBW
+protocol                      = mouse
+device                        = /dev/ttyUSB1
+caid                          = 098E
+detect                        = cd
+mhz                           = 357
+cardmhz                       = 357
+ident                         = 098E:000000
+group                         = 1
+emmcache                      = 1,3,2
+

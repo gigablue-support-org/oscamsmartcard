@@ -1,0 +1,14 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = ORF_ICE_crypto
+protocol                      = mouse
+device                        = /dev/ttyUSB0
+caid                          = 0D95
+mhz                           = 368
+cardmhz                       = 368
+detect                        = cd
+group                         = 1
+emmcache                      = 1,3,2
+ident                         = 0D95:000004,000008,00000C,000010
+ecmwhitelist                  = 0D95@000004,000008,00000C,000010:80,B8

@@ -1,0 +1,4 @@
+
+[hallotv]
+caid                          = 0B02
+srvid                         = 32D7,32D8,32D9

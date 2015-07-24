@@ -1,0 +1,15 @@
+# Read more: http://www.streamboard.tv/svn/oscam/trunk/Distribution/doc/txt/oscam.server.txt
+
+[reader]
+label                         = mtv
+protocol                      = mouse
+device                        = /dev/ttyUSB1
+caid                          = 0B00
+ecmwhitelist                  = 67
+detect                        = cd
+mhz                           = 357
+cardmhz                       = 357
+ident                         = 0B00:000000
+group                         = 1
+emmcache                      = 1,3,2
+
