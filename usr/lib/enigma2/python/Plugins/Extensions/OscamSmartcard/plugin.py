@@ -39,7 +39,6 @@ def translateBlock(block):
 	return block
 
 #############################################################
-emuactive = 0
 
 config.plugins.OscamSmartcard = ConfigSubsection()
 
@@ -185,12 +184,6 @@ config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", 
 				("FreeXTV", _("FreeX TV - Viaccess")),
 				("none", _("None"))
 				])
-				# Smartcard oscam.server.emu
-if emuactive == 1:
-	config.plugins.OscamSmartcard.EMU = ConfigSelection(default="emu_none", choices = [
-					("emu", _("Yes")),
-					("emu_none", _("No"))
-					])
 
 #######################################################################
 
@@ -241,8 +234,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		list.append(getConfigListEntry(_("Internal Reader /dev/sci1:"), config.plugins.OscamSmartcard.internalReader1, _("INFORMATION: Internal Reader /dev/sci1\n\nOn STB's having two cardslots it is mostly the upper cardslot.")))
 		list.append(getConfigListEntry(_("External Reader /dev/ttyUSB0:"), config.plugins.OscamSmartcard.externalReader0, _("INFORMATION: External Reader /dev/ttyUSB0\n\nThis Reader can be used to configure for example a connected easymouse.")))
 		list.append(getConfigListEntry(_("External Reader /dev/ttyUSB1:"), config.plugins.OscamSmartcard.externalReader1, _("INFORMATION: External Reader /dev/ttyUSB1\n\nThis Reader can be used to configure for example a second connected easymouse.")))
-		if emuactive == 1:
-			list.append(getConfigListEntry(_("Enable EMU Reader:"), config.plugins.OscamSmartcard.EMU, _("INFORMATION: Enable EMU Reader\n\nEnabling this Reader, OscamSmartcard will use Oscam Dmod as running Oscam (instead of regular OScam SVN XXXX).\nOscamSmartcard does NOT provide the required file SoftCam.Key!")))
 
 		ConfigListScreen.__init__(self, list)
 		self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.showInfo, "green": self.save,"cancel": self.exit}, -1)
@@ -349,8 +340,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.internalReader1.value + "_internalReader1.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.externalReader0.value + "_externalReader0.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.externalReader1.value + "_externalReader1.txt")
-			if emuactive == 1:
-				self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.EMU.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "footer.txt")
 			xFile = open(self.oscamserverTMP, "w")
 			for xx in self.config_lines:
@@ -369,8 +358,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def saveoscamdvbapi(self):
 		try:
 			self.appendconfFile(self.oscamsmartcarddata + "header.txt")
-			if emuactive == 1:
-				self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.EMU.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.internalReader0.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.internalReader1.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.externalReader0.value + ".txt")
@@ -475,15 +462,15 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.session.open(MessageBox, _("Error creating oscam.services!"), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 	
-	def saveoscamsrvid2(self): #new UT
+	def saveoscamsrvid2(self):
 			system('touch ' + config.plugins.OscamSmartcard.ConfigPath.value +'oscam.srvid2')
 			system('chmod 644 ' + config.plugins.OscamSmartcard.ConfigPath.value +'oscam.srvid2')
 			
-	def saveoscamprovid(self): #new UT
+	def saveoscamprovid(self):
 			system('touch ' + config.plugins.OscamSmartcard.ConfigPath.value +'oscam.provid')
 			system('chmod 644 ' + config.plugins.OscamSmartcard.ConfigPath.value +'oscam.provid')
 
-	def createemmlogdir(self): #new UT
+	def createemmlogdir(self):
 			system('mkdir /var/emmlog && chmod 755 /var/emmlog > /dev/null 2>&1')
 	
 	def savecamstart(self):
@@ -493,10 +480,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('killall -9 oscam_oscamsmartcard 2>/dev/null')
 			except:
 				pass
-			try:
-				system('killall -9 oscam_oscamsmartcard_emu 2>/dev/null')
-			except:
-				pass
+
 			if config.plugins.OscamSmartcard.Camstart.value == 'python':
 					self.oscamcamstart = '/etc/oscamsmartcard.emu'
 					self.oscamcamstartTMP = (self.oscamcamstart + ".tmp")
@@ -504,17 +488,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					config.softcam.actCam2.setValue("None")
 					config.softcam.save()
 					configfile.save()
-			#elif config.plugins.OscamSmartcard.Camstart.value == 'script_tr':
-			#		self.oscamcamstart = '/usr/script/OscamSmartcard_em.sh'
-			#		self.oscamcamstartTMP = (self.oscamcamstart + ".tmp")
-			#		system('export SRVACTIVE=$(cat /usr/bin/csactive)')
-			#		system('export EMUACTIVE=$(cat /usr/bin/emuactive)')
-			#		system('/usr/script/${EMUACTIVE}_em.sh stop')
-			#		system('/usr/script/${SRVACTIVE}_cs.sh stop')
-			#		system('rm -rf /tmp/ecm.info')
-			#		system('rm -rf /usr/bin/csactive')
-			#		system('rm -rf /usr/bin/emuactive')
-			#		system('echo OscamSmartcard > /usr/bin/emuactive')
 			else:
 					self.oscamcamstart = '/etc/init.d/softcam.OscamSmartcard'
 					self.oscamcamstartTMP = (self.oscamcamstart + ".tmp")
@@ -532,17 +505,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			xFile.close()
 			o = open(self.oscamcamstart,"w")
 			for line in open(self.oscamcamstartTMP):
-				if emuactive == 1 and config.plugins.OscamSmartcard.EMU.value == 'emu':
-						line = line.replace("oscam_oscamsmartcard", "oscam_oscamsmartcard_emu")
-				else:
-						line = line.replace("oscam_oscamsmartcard", "oscam_oscamsmartcard")
 				o.write(line)
 			o.close()
 			system('rm -rf ' + self.oscamcamstartTMP)
 			if config.plugins.OscamSmartcard.Camstart.value == 'script':
 					system('cp -f /etc/init.d/softcam.OscamSmartcard /etc/init.d/cardserver.OscamSmartcard')
-			#elif config.plugins.OscamSmartcard.Camstart.value == 'script_tr':
-			#		system('cp -f /usr/script/OscamSmartcard_em.sh /usr/script/OscamSmartcard_cs.sh')
 			else:
 					pass
 			self.config_lines = []
@@ -564,7 +531,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		else:
 			self.close()
 
-	def restartOSCAM(self, answer): #only Openmips #Oatv need reboot #new UT
+	def restartOSCAM(self, answer): #only Openmips 
 		if answer is True:
 			configfile.save()
 			system('/etc/init.d/softcam  restart')
@@ -592,8 +559,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					pass
 		self.close()
 
-#############################################################
-
+##################
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 
