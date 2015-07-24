@@ -1,0 +1,9 @@
+Package: enigma2-plugin-softcams-oscamsmartcard
+Version: 20150723
+Description: OscamSmartcard - Oscam the easy way - oscam-1.20-svn-r10899 - V13/V14 BlockEMMs
+Section: base
+Architecture: mipsel
+Priority: optional
+Maintainer: unknown
+License: unknown
+Depends: enigma2-plugin-pli-softcamsetup
