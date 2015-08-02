@@ -30,8 +30,12 @@ message28="All config files are backed up automatically"
 message29="Download not avaible"
 message30=""
 
-infourl = 'https://raw.githubusercontent.com/gigablue-support-org/oscamsmartcard/master/bin/version.info'
-server = 'https://github.com/gigablue-support-org/oscamsmartcard/blob/master/bin/'
+infourl = 'http://www.gigablue-support.org/download/oscamsmartcard/version.info'
+server = 'http://www.gigablue-support.org/download/oscamsmartcard/'
+#server = 'https://github.com/gigablue-support-org/oscamsmartcard/blob/master/bin/'
+#infourl = 'https://raw.githubusercontent.com/gigablue-support-org/oscamsmartcard/master/bin/version.info'
+
+
 
 #ignore plugin's by makeclean
 ignore1='enigma2-plugin-softcams-oscamsmartcard'

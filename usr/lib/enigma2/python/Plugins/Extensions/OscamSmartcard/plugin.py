@@ -23,6 +23,9 @@ import glob
 from boxbranding import *
 from globalconfig import *
 
+
+
+
 x=getDriverDate()
 x1=x[0:4];x2=x[4:6];x3=x[6:8]
 DriverDate=str(x3 + '.' + x2 + '.'+x1)
@@ -147,6 +150,8 @@ config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", 
 
 #######################################################################
 
+
+
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin = """
 <screen name="OscamSmartcard-Setup" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
@@ -189,6 +194,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["oscamsmartcardhelperimage"] = Pixmap()
 		self["HELPTEXT"] = Label()
 		
+		
+		
+		
+
+		
 		if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
 			list = []
 			list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _(message23)))
@@ -224,7 +234,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				self.selectionChanged()
 			else:
 				self.downloadurl()
+				#onlineavaible = "not found"
 				onlineavaible = self.newversion(arch)
+				
+				
 	
 				list = []
 				if imagename =='Openatv':
@@ -504,15 +517,19 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('chmod 644 ' + config.plugins.OscamSmartcard.ConfigPath.value +'oscam.provid')
 
 	def oscambinaryupdate(self):
-			system('wget -q -T3 -O /tmp/oscam.tar.gz ' + self.downloadurl() +' ' +null)
+		if self.newversion(arch) != message29:
+			system('wget -q -O /tmp/oscam.tar.gz ' + self.downloadurl() +' ' +null)
 			system('tar -xzf /tmp/oscam.tar.gz -C /tmp')
 			system('mv /tmp/oscam /tmp/oscam_oscamsmartcard')
 			system('chmod 777 /tmp/oscam_oscamsmartcard')
 			system('killall -9 oscam_oscamsmartcard' + null)
 			system('rm -f /usr/bin/oscam_oscamsmartcard' + null)
 			system('mv /tmp/oscam_oscamsmartcard /usr/bin/oscam_oscamsmartcard' + null)
-			system('rm -f /tmp/oscam_oscamsmartcard.tar.gz')
-
+			system('rm -f /tmp/oscam.tar.gz')
+			print plugin +'binary download ok'
+		else:
+			print plugin +'no binary download'
+		
 	def downloadurl(self):
 		binary = 'oscam_oscamsmartcard'
 		suffix = '.tar.gz?raw=true'
@@ -522,21 +539,19 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return downloadurl
 
 	def newversion(self,arch):
-		system('wget -q -O /tmp/upgrade.info ' + infourl)
-		if os.path.exists("/tmp/upgrade.info"):
-			file = open('/tmp/upgrade.info', "r")
-			for line in file.readlines():
-				line = line.strip().split(',')
-				if line[0] == arch:
-					newversion = line[1]
-				else:
-					newversion = message24
-				file.close()
-				system('rm -f /tmp/upgrade.info')
-				return newversion
-		else:	
-			newversion =  message29
-		return newversion
+		upgradeinfo = message29
+		upgfile = '/tmp/upgrade.log'
+		system('touch ' + upgfile)
+		useragent = ' -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:40.0) Gecko/20100101 Firefox/40.0"'
+		system('wget -O ' + upgfile + ' ' + infourl  )
+		file = open(upgfile, "r")
+		for line in file.readlines():
+			line = line.strip().split(',')
+			if line[0] == arch:
+				upgradeinfo = line[1]
+		file.close()
+		os.remove(upgfile)
+		return upgradeinfo
 
 	def currentversion(self):
 		if os.path.exists('/usr/bin/oscam_oscamsmartcard'):
@@ -587,7 +602,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if len(x) >0:
 			system('tar -czf /usr/keys/backup-oscamsmartcard-'+ dd +'.tar.gz /usr/keys/oscam.*')
 			system('rm -f /usr/keys/oscam.*')
-		y = glob.glob("/usr/keys/oscam.*")
+		y = glob.glob("/etc/tuxbox/config/oscam.*")
 		if len(y) >0:
 			system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
 			system('rm -f /etc/tuxbox/config/oscam.*')
@@ -619,8 +634,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
 				system('chmod 777 /etc/init.d/softcam.*')
 				system('chmod 777 /etc/init.d/cardserver.*')
+				system('update-rc.d softcam  defaults ' + null)
+				system('update-rc.d cardserver defaults ' + null)
 				print plugin +'create camstart files  ... done'
-			
+
 			if imagename =='Openatv':
 				print plugin +'create camstart files for OpenATV..'
 				system('killall -9 oscam_oscamsmartcard' + null)
@@ -664,6 +681,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			else:
 					pass
 		self.close()
+		
+	
 		
 ##################
 def main(session, **kwargs):
