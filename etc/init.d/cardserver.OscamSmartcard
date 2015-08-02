@@ -3,7 +3,7 @@
 case "$1" in
 start)
 	ulimit -s 512
-	exec start-stop-daemon -S -x /usr/bin/oscam_oscamsmartcard -- -b -r 2 -u -S -c /etc/tuxbox/config > /dev/null 2>&1 &
+	exec start-stop-daemon -S -x /usr/bin/oscam_oscamsmartcard -- -b -r 2 -c /etc/tuxbox/config > /dev/null 2>&1 &
 	;;
 stop)
 	exec start-stop-daemon -K -R 2 -x /usr/bin/oscam_oscamsmartcard > /dev/null 2>&1 &

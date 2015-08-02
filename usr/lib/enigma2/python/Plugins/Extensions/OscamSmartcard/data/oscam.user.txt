@@ -10,9 +10,3 @@ cccmaxhops                    = 15
 cccreshare                    = 15
 cccignorereshare              = 1
 
-[account]
-user                          = cccamclient
-pwd                           = cccampassword
-description                   = Example Linie for CCcam Clientes-> C: <this IP> 16000 cccamclient cccampassword no {0:0:1}
-uniq                          = 3
-group                         = 1

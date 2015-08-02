@@ -1,2 +1,1 @@
-# Configs created by OscamSmartcard Gigablue-Support.org
-
+# Configs created by OscamSmartcard 2.0

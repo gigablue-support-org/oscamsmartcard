@@ -14,25 +14,16 @@ lb_mode                       = 1
 lb_save                       = 500
 lb_min_ecmcount               = 3
 lb_savepath                   = /tmp/.oscam/oscam.stat
-emmlogdir                     = /var/emmlog
 ecmfmt                        = c:p:s #l
 failbantime                   = 15
 failbancount                  = 3
 suppresscmd08                 = 1
 
-[cccam]
-port                          = 16000
-nodeid                        = 
-version                       = 2.3.0
-reshare                       = 2
-forward_origin_card           = 1
-stealth                       = 1
-
 [dvbapi]
 enabled                       = 1
 au                            = 1
 user                          = mybox
-read_sdt                      = 1
+read_sdt                      = 2
 write_sdt_prov                = 1
 boxtype                       = dreambox
 
