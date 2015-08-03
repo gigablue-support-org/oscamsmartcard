@@ -36,7 +36,6 @@ server = 'http://www.gigablue-support.org/download/oscamsmartcard/'
 #infourl = 'https://raw.githubusercontent.com/gigablue-support-org/oscamsmartcard/master/bin/version.info'
 
 
-
 #ignore plugin's by makeclean
 ignore1='enigma2-plugin-softcams-oscamsmartcard'
 ignore2='enigma2-plugin-pli-softcamsetup'
@@ -45,5 +44,5 @@ ignore3='enigma2-plugin-softcams-oscamstatus'
 #system
 plugin='[OscamSmartcard] '
 null =' >/dev/null 2>&1'
-opkginstallcheck= 'opkg list-installed |grep -i softcam'
-deinstall ='opkg remove --force-remove '
+
+

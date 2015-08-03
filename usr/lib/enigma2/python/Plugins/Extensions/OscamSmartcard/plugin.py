@@ -23,9 +23,6 @@ import glob
 from boxbranding import *
 from globalconfig import *
 
-
-
-
 x=getDriverDate()
 x1=x[0:4];x2=x[4:6];x3=x[6:8]
 DriverDate=str(x3 + '.' + x2 + '.'+x1)
@@ -51,8 +48,6 @@ def architectures():
 
 architectures()
 arch = architectures()[2]
-
-
 
 ############################################################################
 ##for test architectures remove the #
@@ -150,8 +145,6 @@ config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", 
 
 #######################################################################
 
-
-
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin = """
 <screen name="OscamSmartcard-Setup" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
@@ -187,18 +180,14 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.oscamserverTMP = (self.oscamserver + ".tmp")
 		self.oscamdvbapi = (self.oscamconfigpath + "oscam.dvbapi")
 		self.oscamdvbapiTMP = (self.oscamdvbapi + ".tmp")
-		self.oscamsmartcarddata = "/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/data/"
+		self.createoscamsmartcarddata()
+		self.oscamsmartcarddata = "/tmp/data/"
 		self.picPath = picPath
 		self.Scale = AVSwitch().getFramebufferScale()
 		self.PicLoad = ePicLoad()
 		self["oscamsmartcardhelperimage"] = Pixmap()
 		self["HELPTEXT"] = Label()
-		
-		
-		
-		
-
-		
+	
 		if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
 			list = []
 			list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _(message23)))
@@ -222,7 +211,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				while i < len(a):
 					title = a[i].replace("enigma2-plugin-softcams-",'')
 					desc = a[i]
-					xx='config.plugins.OscamSmartcard.installed'+str(i)
+					xx = 'config.plugins.OscamSmartcard.installed'+str(i)
 					xx = ConfigSelection(default="Yes", choices = [("Yes", _("Yes"))])
 					list.append(getConfigListEntry(_(str(i+1) +".)  " + title), xx, _(desc)))
 					i = i + 1
@@ -234,11 +223,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				self.selectionChanged()
 			else:
 				self.downloadurl()
-				#onlineavaible = "not found"
 				onlineavaible = self.newversion(arch)
-				
-				
-	
 				list = []
 				if imagename =='Openatv':
 					camstartname='Openatv System'
@@ -376,8 +361,18 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.session.open(MessageBox, _(message22), MessageBox.TYPE_INFO,10)
 			self.close()
 		self.session.open(MessageBox, _(message05 +'\n' + imagename), MessageBox.TYPE_INFO,10)
+		self.rmoscamsmartcarddata()
 		self.close()
 		#Finish ENDE
+	
+	def createoscamsmartcarddata(self):
+		data = 'wget -O /tmp/data.zip '+ server +'data.zip'
+		popen(data)
+		popen('unzip -o -q -d /tmp /tmp/data.zip')
+		popen('rm /tmp/data.zip')
+		
+	def rmoscamsmartcarddata(self):
+		popen('rm -f /tmp/data/*')
 
 	def saveoscamserver(self):
 		try:
@@ -568,7 +563,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def checkallcams(self):
 		liste=[]
-		f = popen(opkginstallcheck)
+		f = popen('opkg list-installed |grep -i softcam')
 		for line in f:
 		        line=line.strip().split()
 		        if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3:
@@ -612,7 +607,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if len(a) >0:
 			i = 0
 			while i < len(a):
-				system(deinstall +a[i] + null)
+				system('opkg remove --force-remove ' +a[i] + null)
 				print plugin + message21 +' ' + a[i]
 				i = i + 1
 		else:
@@ -681,9 +676,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			else:
 					pass
 		self.close()
-		
-	
-		
+
 ##################
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
