@@ -23,11 +23,20 @@ import glob
 from boxbranding import *
 from globalconfig import *
 
-x=getDriverDate()
-x1=x[0:4];x2=x[4:6];x3=x[6:8]
-DriverDate=str(x3 + '.' + x2 + '.'+x1)
+def realDriverDate():
+    y = popen('lsmod')
+    y = y.read();y = y.strip()#.split()
+    if 'dvb' in y: drivername='dvb'
+    else: drivername='linux'
+    x = popen('modinfo '+ drivername +' |grep -i version')
+    x = x.read();x = x.strip().split()
+    date = x[1];date = date[:14];b=date
+    YY=b[0:4];MM=b[4:6];DD=b[6:8];HO=b[8:10];MI=b[10:12];SE=b[12:14]
+    realdate=str(DD + '.' + MM + '.' + YY + ' - ' + HO  + ':' + MI + ':' + SE)
+    return realdate  
 
-ImageTypeInfo = (getMachineBrand()+ ' - '+getMachineName()+ ' - '+getImageDistro()+ '-'+getImageVersion()+ '  Driver: '+DriverDate+ ' ').title()
+
+ImageTypeInfo = (getMachineBrand()+ ' - '+getMachineName()+ ' - '+getImageDistro()+ '-'+getImageVersion()+ '  Driver: '+ realDriverDate() + ' ').title()
 
 ImageType =getImageDistro()
 if   'openmips' in ImageType:
