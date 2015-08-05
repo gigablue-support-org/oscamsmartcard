@@ -381,7 +381,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		popen('rm /tmp/data.zip')
 		
 	def rmoscamsmartcarddata(self):
-		popen('rm -f /tmp/data/*')
+		popen('rm -rf /tmp/data')
 
 	def saveoscamserver(self):
 		try:
