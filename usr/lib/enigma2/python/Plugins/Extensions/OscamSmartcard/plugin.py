@@ -20,23 +20,25 @@ from Tools.Directories import fileExists, resolveFilename, SCOPE_LANGUAGE, SCOPE
 import os
 import time
 import glob
+import urllib2
 from boxbranding import *
 from globalconfig import *
 
+
 def realDriverDate():
-    y = popen('lsmod')
-    y = y.read();y = y.strip()#.split()
-    if 'dvb' in y: drivername='dvb'
-    else: drivername='linux'
-    x = popen('modinfo '+ drivername +' |grep -i version')
-    x = x.read();x = x.strip().split()
-    date = x[1];date = date[:14];b=date
-    YY=b[0:4];MM=b[4:6];DD=b[6:8];HO=b[8:10];MI=b[10:12];SE=b[12:14]
-    realdate=str(DD + '.' + MM + '.' + YY + ' - ' + HO  + ':' + MI + ':' + SE)
-    return realdate  
+	y = popen('lsmod')
+	y = y.read();y = y.strip()
+	if 'dvb' in y:
+	    drivername='dvb'
+	    x = popen('modinfo '+ drivername +' |grep -i version')
+	    x = x.read();x = x.strip().split()
+	    date = x[1];date = date[:14];b=date
+	    YY=b[0:4];MM=b[4:6];DD=b[6:8];HO=b[8:10];MI=b[10:12];SE=b[12:14]
+	    realdate=str(DD + '.' + MM + '.' + YY + ' - ' + HO  + ':' + MI + ':' + SE)
+	else: realdate = ' not avaible'  
+	return realdate
 
-
-ImageTypeInfo = (getMachineBrand()+ ' - '+getMachineName()+ ' - '+getImageDistro()+ '-'+getImageVersion()+ '  Driver: '+ realDriverDate() + ' ').title()
+ImageTypeInfo = (getMachineBrand()+ ' - '+getMachineName()+ ' - '+getImageDistro()+ '-'+getImageVersion()+ '     Driver: '+ realDriverDate() + ' ').title()
 
 ImageType =getImageDistro()
 if   'openmips' in ImageType:
@@ -89,7 +91,8 @@ def translateBlock(block):
 #############################################################
 
 config.plugins.OscamSmartcard = ConfigSubsection()
-config.plugins.OscamSmartcard.menufake = ConfigSelection(default="-", choices = [("+", _("-"))])
+config.plugins.OscamSmartcard.menufake = ConfigSelection(default="-", choices = [("-", _("-"))])
+
 				# Start Softcam via Script or via Pythonstarter
 config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="script", choices = [
 				("python", _("Python SoftCamstart (openATV)")),
@@ -160,8 +163,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
     <eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="#20000000" transparent="0" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
-    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="E2 Restart" transparent="1" />
-    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="Help" transparent="1" />
+    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
+    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="remove active conf+set" transparent="1" />
     <widget name="config" position="61,114" size="590,500" scrollbarMode="showOnDemand" transparent="1" />
     <eLabel position="60,55" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
     <eLabel position="400,58" size="349,50" text="Setup" foregroundColor="unffffff" font="Regular; 30" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
@@ -189,7 +192,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.oscamserverTMP = (self.oscamserver + ".tmp")
 		self.oscamdvbapi = (self.oscamconfigpath + "oscam.dvbapi")
 		self.oscamdvbapiTMP = (self.oscamdvbapi + ".tmp")
-		self.createoscamsmartcarddata()
+		if self.onlinecheck() == True:
+			self.createoscamsmartcarddata()
 		self.oscamsmartcarddata = "/tmp/data/"
 		self.picPath = picPath
 		self.Scale = AVSwitch().getFramebufferScale()
@@ -197,82 +201,86 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["oscamsmartcardhelperimage"] = Pixmap()
 		self["HELPTEXT"] = Label()
 	
-		if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
+		if  self.onlinecheck() == False:
 			list = []
-			list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _(message23)))
-			list.append(getConfigListEntry(_(message24 +' ' + arch +' '+ message25), ))
-			list.append(getConfigListEntry(_(ImageTypeInfo), ))
-			list.append(getConfigListEntry(_(extrainfo), ))
+			list.append(getConfigListEntry(_('Warning' + ' : '+ message30), config.plugins.OscamSmartcard.menufake, _(message23)))
+			list.append(getConfigListEntry(_(message23), ))
 			ConfigListScreen.__init__(self, list)
-			self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green":self.exit,"ok": self.exit,"cancel": self.exit}, -1)
-			self.onLayoutFinish.append(self.UpdatePicture)
-			if not self.selectionChanged in self["config"].onSelectionChanged:
-				self["config"].onSelectionChanged.append(self.selectionChanged)
-			self.selectionChanged()
+			self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green": self.exit,"ok": self.exit,"cancel": self.exit}, -1)
 			self.exit
 		else:
-			a=self.checkallcams()
-			anzahl = len(a)
-			if len(a)>0:
+			if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
 				list = []
-				list.append(getConfigListEntry(_(message13 + " :" +str(anzahl) +' '+ message14), config.plugins.OscamSmartcard.systemclean, _('\n' + message08 + '\n' + message28)))
-				i=0
-				while i < len(a):
-					title = a[i].replace("enigma2-plugin-softcams-",'')
-					desc = a[i]
-					xx = 'config.plugins.OscamSmartcard.installed'+str(i)
-					xx = ConfigSelection(default="Yes", choices = [("Yes", _("Yes"))])
-					list.append(getConfigListEntry(_(str(i+1) +".)  " + title), xx, _(desc)))
-					i = i + 1
-				ConfigListScreen.__init__(self, list)
-				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot,"blue": self.showInfo,"green": self.systemcleaning,"cancel": self.exit}, -1)
-				self.onLayoutFinish.append(self.UpdatePicture)
-				if not self.selectionChanged in self["config"].onSelectionChanged:
-					self["config"].onSelectionChanged.append(self.selectionChanged)
-				self.selectionChanged()
-			else:
-				self.downloadurl()
-				onlineavaible = self.newversion(arch)
-				list = []
-				if imagename =='Openatv':
-					camstartname='Openatv System'
-					config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/usr/keys/", choices = [("/usr/keys/", _("/usr/keys/ (openATV)"))])
-					config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="script", choices = [("python", _("Python SoftCamstart (openATV)"))])
-				elif imagename =='Openmips':
-					camstartname='SoftcamManager'
-					config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="script", choices = [("script", _("Script SoftCamstart (openMips)"))])
-					config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [("/etc/tuxbox/config/", _("/etc/tuxbox/config/ (openMips)"))])
-				else:
-					camstartname='SoftcamManager'
-					config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="script", choices = [("script", _("Script SoftCamstart (openMips)"))])
-					config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [("/etc/tuxbox/config/", _("/etc/tuxbox/config/ (openMips)"))])
-				
-				list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _('INFORMATION: '+ message27 +'\n' + message28 )))
+				list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _(message23)))
+				list.append(getConfigListEntry(_(message24 +' ' + arch +' '+ message25), ))
 				list.append(getConfigListEntry(_(ImageTypeInfo), ))
 				list.append(getConfigListEntry(_(extrainfo), ))
-				list.append(getConfigListEntry(_(message03 + '\t: '+ config.plugins.OscamSmartcard.ConfigPath.value), ))
-				list.append(getConfigListEntry(_(message10 + '\t: ' + camstartname), ))
-				list.append(getConfigListEntry(_(message07 + '\t: ' + arch), ))
-				list.append(getConfigListEntry(_(message09 + '\t: ' + str(self.readercheck()[4])  ), ))
-				list.append(getConfigListEntry(_("------------------------------------------------------------------------------------------------"), ))
-				list.append(getConfigListEntry(_("Select OScam WebifPort:"), config.plugins.OscamSmartcard.WebifPort, _("INFORMATION: Select OScam WebifPort\n\nOscam Webif will be accessible on the selected port.\ne.g. http:\\IPOFYOURBOX:83")))
-				if self.readercheck()[0] == 'installed':
-					list.append(getConfigListEntry(_("Internal Reader /dev/sci0:"), config.plugins.OscamSmartcard.internalReader0, _("INFORMATION: Internal Reader /dev/sci0\n\nAll STB's having only one cardslot.\nOn STB's having two cardslots it is mostly the lower cardslot.")))
-				if self.readercheck()[1] == 'installed':
-					list.append(getConfigListEntry(_("Internal Reader /dev/sci1:"), config.plugins.OscamSmartcard.internalReader1, _("INFORMATION: Internal Reader /dev/sci1\n\nOn STB's having two cardslots it is mostly the upper cardslot.")))
-				if self.readercheck()[2] == 'installed':
-					list.append(getConfigListEntry(_("External Reader /dev/ttyUSB0:"), config.plugins.OscamSmartcard.externalReader0, _("INFORMATION: External Reader /dev/ttyUSB0\n\nThis Reader can be used to configure for example a connected easymouse.")))
-				if self.readercheck()[3] == 'installed':
-					list.append(getConfigListEntry(_("External Reader /dev/ttyUSB1:"), config.plugins.OscamSmartcard.externalReader1, _("INFORMATION: External Reader /dev/ttyUSB1\n\nThis Reader can be used to configure for example a second connected easymouse.")))
-
-				list.append(getConfigListEntry(_(message04),config.plugins.OscamSmartcard.oscambinary,_('INFORMATION: ' + message02 + '\n\ninstalled\t: ' + self.currentversion() + '\n' + message06 + '\t: ' + onlineavaible )))
-				
 				ConfigListScreen.__init__(self, list)
-				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.showInfo, "green": self.save,"cancel": self.exit}, -1)
-				self.onLayoutFinish.append(self.UpdatePicture)
-				if not self.selectionChanged in self["config"].onSelectionChanged:
-					self["config"].onSelectionChanged.append(self.selectionChanged)
-				self.selectionChanged()
+				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green":self.exit,"ok": self.exit,"cancel": self.exit}, -1)
+				self.exit
+			else:
+				a=self.checkallcams()
+				anzahl = len(a)
+				if len(a)>0:
+					list = []
+					list.append(getConfigListEntry(_(message13 + " :" +str(anzahl) +' '+ message14), config.plugins.OscamSmartcard.systemclean, _('\n' + message08 + '\n' + message28)))
+					i=0
+					while i < len(a):
+						title = a[i].replace("enigma2-plugin-softcams-",'')
+						desc = a[i]
+						xx = 'config.plugins.OscamSmartcard.installed'+str(i)
+						xx = ConfigSelection(default="Yes", choices = [("Yes", _("Yes"))])
+						list.append(getConfigListEntry(_(str(i+1) +".)  " + title), xx, _(desc)))
+						i = i + 1
+					ConfigListScreen.__init__(self, list)
+					self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot,"blue": self.showInfo,"green": self.systemcleaning,"cancel": self.exit}, -1)
+					self.onLayoutFinish.append(self.UpdatePicture)
+					if not self.selectionChanged in self["config"].onSelectionChanged:
+						self["config"].onSelectionChanged.append(self.selectionChanged)
+					self.selectionChanged()
+				else:
+
+					self.downloadurl()
+					onlineavaible = self.newversion(arch)
+					list = []
+					if imagename =='Openatv':
+						camstartname='Openatv System'
+						config.plugins.OscamSmartcard.Camstart.value = "python"
+						config.plugins.OscamSmartcard.ConfigPath.value = "/usr/keys/"
+					elif imagename =='Openmips':
+						camstartname='SoftcamManager'
+						config.plugins.OscamSmartcard.Camstart.value = "script"
+						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+					else:
+						camstartname='SoftcamManager'
+						config.plugins.OscamSmartcard.Camstart.value = "script"
+						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+
+					list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _('INFORMATION: '+ message27 +'\n' + message28 )))
+					list.append(getConfigListEntry(_(ImageTypeInfo), ))
+					list.append(getConfigListEntry(_(extrainfo), ))
+					list.append(getConfigListEntry(_(message03 + '\t: '+ config.plugins.OscamSmartcard.ConfigPath.value), ))
+					list.append(getConfigListEntry(_(message10 + '\t: ' + camstartname), ))
+					list.append(getConfigListEntry(_(message07 + '\t: ' + arch), ))
+					list.append(getConfigListEntry(_(message09 + '\t: ' + str(self.readercheck()[4])  ), ))
+					list.append(getConfigListEntry(_("------------------------------------------------------------------------------------------------"), ))
+					list.append(getConfigListEntry(_("Select OScam WebifPort:"), config.plugins.OscamSmartcard.WebifPort, _("INFORMATION: Select OScam WebifPort\n\nOscam Webif will be accessible on the selected port.\ne.g. http:\\IPOFYOURBOX:83")))
+					if self.readercheck()[0] == 'installed':
+						list.append(getConfigListEntry(_("Internal Reader /dev/sci0:"), config.plugins.OscamSmartcard.internalReader0, _("INFORMATION: Internal Reader /dev/sci0\n\nAll STB's having only one cardslot.\nOn STB's having two cardslots it is mostly the lower cardslot.")))
+					if self.readercheck()[1] == 'installed':
+						list.append(getConfigListEntry(_("Internal Reader /dev/sci1:"), config.plugins.OscamSmartcard.internalReader1, _("INFORMATION: Internal Reader /dev/sci1\n\nOn STB's having two cardslots it is mostly the upper cardslot.")))
+					if self.readercheck()[2] == 'installed':
+						list.append(getConfigListEntry(_("External Reader /dev/ttyUSB0:"), config.plugins.OscamSmartcard.externalReader0, _("INFORMATION: External Reader /dev/ttyUSB0\n\nThis Reader can be used to configure for example a connected easymouse.")))
+					if self.readercheck()[3] == 'installed':
+						list.append(getConfigListEntry(_("External Reader /dev/ttyUSB1:"), config.plugins.OscamSmartcard.externalReader1, _("INFORMATION: External Reader /dev/ttyUSB1\n\nThis Reader can be used to configure for example a second connected easymouse.")))
+	
+					list.append(getConfigListEntry(_(message04),config.plugins.OscamSmartcard.oscambinary,_('INFORMATION: ' + message02 + '\n\ninstalled\t: ' + self.currentversion() + '\n' + message06 + '\t: ' + onlineavaible )))
+					ConfigListScreen.__init__(self, list)
+					self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfigset, "green": self.save,"cancel": self.exit}, -1)
+					self.onLayoutFinish.append(self.UpdatePicture)
+					if not self.selectionChanged in self["config"].onSelectionChanged:
+						self["config"].onSelectionChanged.append(self.selectionChanged)
+					self.selectionChanged()
 	
 	def selectionChanged(self):
 		self["HELPTEXT"].setText(self["config"].getCurrent()[2])
@@ -375,7 +383,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		#Finish ENDE
 	
 	def createoscamsmartcarddata(self):
-		data = 'wget -O /tmp/data.zip '+ server +'data.zip'
+		data = 'wget -O /tmp/data.zip '+ server +'data.zip ' + null
 		popen(data)
 		popen('unzip -o -q -d /tmp /tmp/data.zip')
 		popen('rm /tmp/data.zip')
@@ -530,9 +538,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -f /usr/bin/oscam_oscamsmartcard' + null)
 			system('mv /tmp/oscam_oscamsmartcard /usr/bin/oscam_oscamsmartcard' + null)
 			system('rm -f /tmp/oscam.tar.gz')
-			print plugin +'binary download ok'
-		else:
-			print plugin +'no binary download'
 		
 	def downloadurl(self):
 		binary = 'oscam_oscamsmartcard'
@@ -544,17 +549,19 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def newversion(self,arch):
 		upgradeinfo = message29
-		upgfile = '/tmp/upgrade.log'
-		system('touch ' + upgfile)
-		useragent = ' -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:40.0) Gecko/20100101 Firefox/40.0"'
-		system('wget -O ' + upgfile + ' ' + infourl  )
-		file = open(upgfile, "r")
-		for line in file.readlines():
-			line = line.strip().split(',')
-			if line[0] == arch:
-				upgradeinfo = line[1]
-		file.close()
-		os.remove(upgfile)
+		if self.onlinecheck() == True:
+			upgfile = '/tmp/upgrade.log'
+			system('touch ' + upgfile)
+			useragent = ' -U "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:40.0) Gecko/20100101 Firefox/40.0"'
+			system('wget -O ' + upgfile + ' ' + infourl  +null )
+			file = open(upgfile, "r")
+			for line in file.readlines():
+				line = line.strip().split(',')
+				if line[0] == arch:
+					upgradeinfo = line[1]
+			file.close()
+			os.remove(upgfile)
+			return upgradeinfo
 		return upgradeinfo
 
 	def currentversion(self):
@@ -664,7 +671,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		for x in file_lines:
 			self.config_lines.append(x)
 
-	def systemclean (self, answer):
+	def systemclean(self, answer):
 		if answer is True:
 			self.makeclean()
 			self.close()
@@ -677,13 +684,33 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('reboot')
 		else:
 			self.close()
+	
+	def onlinecheck(self):
+		try:
+			response=urllib2.urlopen('http://192.185.41.27',timeout=1)
+			return True
+		except urllib2.URLError as err: pass
+		return False
 
 	def exit(self):
+		
 		for x in self["config"].list:
 			if len(x) > 1:
 					x[1].cancel()
 			else:
 					pass
+		self.close()
+	
+	def rmconfigset(self): #only for testing press blue
+		system('killall -9 oscam_oscamsmartcard ' + null)
+		system('rm /usr/bin/oscam_oscamsmartcard' + null)
+		system('rm -f /usr/keys/oscam.*')
+		system('rm -f /etc/tuxbox/config/oscam.*')
+		system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard')
+		system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard')
+		system('rm -f /etc/oscamsmartcard.emu')
+		system('rm -rf /tmp/data')
+		system('rm -f /tmp/upgrade.log')
 		self.close()
 
 ##################
@@ -691,4 +718,4 @@ def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 
 def Plugins(**kwargs):
-	return PluginDescriptor(name="OscamSmartcard v2.0", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
+	return PluginDescriptor(name="Oscam Smartcard v2.0", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
