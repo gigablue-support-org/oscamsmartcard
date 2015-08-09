@@ -162,9 +162,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 <screen name="OscamSmartcard-Setup" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
     <eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="#20000000" transparent="0" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
-    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
+    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start install" transparent="1" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
-    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="remove active conf+set" transparent="1" />
+    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="remove active set" transparent="1" />
     <widget name="config" position="61,114" size="590,500" scrollbarMode="showOnDemand" transparent="1" />
     <eLabel position="60,55" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
     <eLabel position="400,58" size="349,50" text="Setup" foregroundColor="unffffff" font="Regular; 30" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
@@ -192,9 +192,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.oscamserverTMP = (self.oscamserver + ".tmp")
 		self.oscamdvbapi = (self.oscamconfigpath + "oscam.dvbapi")
 		self.oscamdvbapiTMP = (self.oscamdvbapi + ".tmp")
-		if self.onlinecheck() == True:
-			self.createoscamsmartcarddata()
-		self.oscamsmartcarddata = "/tmp/data/"
 		self.picPath = picPath
 		self.Scale = AVSwitch().getFramebufferScale()
 		self.PicLoad = ePicLoad()
@@ -211,10 +208,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		else:
 			if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
 				list = []
-				list.append(getConfigListEntry(_(message26), config.plugins.OscamSmartcard.menufake, _(message23)))
+				list.append(getConfigListEntry(_("Warning"), config.plugins.OscamSmartcard.menufake, _(message23)))
 				list.append(getConfigListEntry(_(message24 +' ' + arch +' '+ message25), ))
-				list.append(getConfigListEntry(_(ImageTypeInfo), ))
 				list.append(getConfigListEntry(_(extrainfo), ))
+				list.append(getConfigListEntry(_(message23), ))
 				ConfigListScreen.__init__(self, list)
 				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green":self.exit,"ok": self.exit,"cancel": self.exit}, -1)
 				self.exit
@@ -223,7 +220,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				anzahl = len(a)
 				if len(a)>0:
 					list = []
-					list.append(getConfigListEntry(_(message13 + " :" +str(anzahl) +' '+ message14), config.plugins.OscamSmartcard.systemclean, _('\n' + message08 + '\n' + message28)))
+					list.append(getConfigListEntry(_(message13 + " : " +str(anzahl) +' '+ message14), config.plugins.OscamSmartcard.systemclean, _('\n' + message08 + '\n' + message28)))
 					i=0
 					while i < len(a):
 						title = a[i].replace("enigma2-plugin-softcams-",'')
@@ -239,7 +236,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						self["config"].onSelectionChanged.append(self.selectionChanged)
 					self.selectionChanged()
 				else:
-
+					self.createoscamsmartcarddata()
+					self.oscamsmartcarddata = "/tmp/data/"
 					self.downloadurl()
 					onlineavaible = self.newversion(arch)
 					list = []
@@ -276,7 +274,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	
 					list.append(getConfigListEntry(_(message04),config.plugins.OscamSmartcard.oscambinary,_('INFORMATION: ' + message02 + '\n\ninstalled\t: ' + self.currentversion() + '\n' + message06 + '\t: ' + onlineavaible )))
 					ConfigListScreen.__init__(self, list)
-					self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfigset, "green": self.save,"cancel": self.exit}, -1)
+					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
 					self.onLayoutFinish.append(self.UpdatePicture)
 					if not self.selectionChanged in self["config"].onSelectionChanged:
 						self["config"].onSelectionChanged.append(self.selectionChanged)
@@ -582,7 +580,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		f = popen('opkg list-installed |grep -i softcam')
 		for line in f:
 		        line=line.strip().split()
-		        if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3:
+		        if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4:
 		            liste.append(line[0])
 		f.close()
 		return liste
@@ -693,7 +691,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return False
 
 	def exit(self):
-		
+		system('rm -rf /tmp/data')
 		for x in self["config"].list:
 			if len(x) > 1:
 					x[1].cancel()
@@ -701,17 +699,26 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					pass
 		self.close()
 	
-	def rmconfigset(self): #only for testing press blue
-		system('killall -9 oscam_oscamsmartcard ' + null)
-		system('rm /usr/bin/oscam_oscamsmartcard' + null)
-		system('rm -f /usr/keys/oscam.*')
-		system('rm -f /etc/tuxbox/config/oscam.*')
-		system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard')
-		system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard')
-		system('rm -f /etc/oscamsmartcard.emu')
-		system('rm -rf /tmp/data')
-		system('rm -f /tmp/upgrade.log')
-		self.close()
+	def rmconfig(self):
+		rmconfigset = self.session.openWithCallback(self.rmconfigset,MessageBox,_(message32), MessageBox.TYPE_YESNO)
+		rmconfigset.setTitle(_(message31))
+		#self.close()
+	
+	def rmconfigset(self, answer):
+		if answer is True:
+			system('killall -9 oscam_oscamsmartcard ' + null)
+			system('rm /usr/bin/oscam_oscamsmartcard' + null)
+			system('rm -f /usr/keys/oscam.*')
+			system('rm -f /etc/tuxbox/config/oscam.*')
+			system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard')
+			system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard')
+			system('rm -f /etc/oscamsmartcard.emu')
+			system('rm -rf /tmp/data')
+			system('rm -f /tmp/upgrade.log')
+			self.close()
+		else:
+			return
+
 
 ##################
 def main(session, **kwargs):

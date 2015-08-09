@@ -12,7 +12,7 @@ message10="Camstart set automatically to"
 message11="file exists, but is not executable"
 message12="Uninstall all Softcams ?"
 message13="Warning"
-message14="unused Softams,Config or others found"
+message14="disruptive Softam found"
 message15="Error"
 message16="All Softcams will be deinstalled\nAre you sure ?"
 message17="found installed Softcams to be remove" 
@@ -28,18 +28,22 @@ message26="-------------------------------------- Auto Config-------------------
 message27="make your selection and press GREEN"
 message28="All config files are backed up automatically"
 message29="Download not avaible"
-message30=""
+message30="Your STB is not connected to the Internet"
+message31="remove active config"
+message32="Do you really want to remove all oscam_smartcard\nconfigs, binary's and camstartfiles.\nNo backup !!"
+
 
 infourl = 'http://www.gigablue-support.org/download/oscamsmartcard/version.info'
 server = 'http://www.gigablue-support.org/download/oscamsmartcard/'
 #server = 'https://github.com/gigablue-support-org/oscamsmartcard/blob/master/bin/'
 #infourl = 'https://raw.githubusercontent.com/gigablue-support-org/oscamsmartcard/master/bin/version.info'
 
-
 #ignore plugin's by makeclean
 ignore1='enigma2-plugin-softcams-oscamsmartcard'
 ignore2='enigma2-plugin-pli-softcamsetup'
 ignore3='enigma2-plugin-softcams-oscamstatus'
+ignore4='enigma2-plugin-softcams-cccam.config'
+
 
 #system
 plugin='[OscamSmartcard] '
