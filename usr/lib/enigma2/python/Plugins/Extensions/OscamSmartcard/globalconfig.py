@@ -31,6 +31,8 @@ message29="Download not avaible"
 message30="Your STB is not connected to the Internet"
 message31="remove active config"
 message32="Do you really want to remove all oscam_smartcard\nconfigs, binary's and camstartfiles.\nNo backup !!"
+message33="Import CCCam Server, User and Settings"
+message34="it is strongly recommended"
 
 
 infourl = 'http://www.gigablue-support.org/download/oscamsmartcard/version.info'
