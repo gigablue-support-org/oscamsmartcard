@@ -45,7 +45,7 @@ ignore1='enigma2-plugin-softcams-oscamsmartcard'
 ignore2='enigma2-plugin-pli-softcamsetup'
 ignore3='enigma2-plugin-softcams-oscamstatus'
 ignore4='enigma2-plugin-softcams-cccam.config'
-
+ignore5='enigma2-plugin-softcams-mgcamd.config'
 
 #system
 plugin='[OscamSmartcard] '
