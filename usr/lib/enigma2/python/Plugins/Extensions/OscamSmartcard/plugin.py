@@ -154,6 +154,8 @@ cardlist = [
 	("D01", _("Kabel Deutschl. D01")),
 	("D02", _("Kabel Deutschl. D02")),
 	("D09", _("Kabel Deutschl. D09")),
+	("KDG0x", _("Kabel Deutschl. G02/G09")),
+	("smartHD", _("NC+ SmartHD+")),
 	("MTV", _("MTV")),
 	("tivu", _("Tivusat")),
 	("JSC", _("JSC-sports - Viaccess")),
@@ -667,6 +669,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('update-rc.d softcam  defaults ' + null)
 				system('update-rc.d cardserver defaults ' + null)
 				print plugin +'create camstart files  ... done'
+				config.plugins.OscamSmartcard.oscambinary.setValue("no_binaryupdate")
+				configfile.save()
+				
 
 			if imagename =='Openatv':
 				print plugin +'create camstart files for OpenATV..'
@@ -728,13 +733,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if answer is True:
 			system('killall -9 oscam_oscamsmartcard ' + null)
 			system('rm /usr/bin/oscam_oscamsmartcard' + null)
-			system('rm -f /usr/keys/oscam.*')
-			system('rm -f /etc/tuxbox/config/oscam.*')
-			system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard')
-			system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard')
-			system('rm -f /etc/oscamsmartcard.emu')
-			system('rm -rf /tmp/data')
-			system('rm -f /tmp/upgrade.log')
+			system('rm -f /usr/keys/oscam.*' + null)
+			system('rm -f /etc/tuxbox/config/oscam.*' + null)
+			system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard' + null)
+			system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard' + null)
+			system('rm -f /etc/oscamsmartcard.emu' + null)
+			system('rm -rf /tmp/data' + null)
+			system('rm -f /tmp/upgrade.log' + null)
 			self.close()
 		else:
 			return
