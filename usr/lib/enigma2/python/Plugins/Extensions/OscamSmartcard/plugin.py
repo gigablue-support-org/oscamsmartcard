@@ -54,15 +54,12 @@ else:
 	imagename = 'unknown System'
 
 def architectures():
-	x = popen('uname -a')
-	x = x.read(); x=x.strip().split(); system=x[0]
-	hostname=x[1]
-	kernelversion=x[2]; kerneldate= x[7]+'.' + x[6] +'.'+x[10]
-	hardwaretype=x[11]
-	ossystem=x[0]
-	return ossystem,kernelversion,hardwaretype,hostname
+        hardwaretype = popen('uname -m').read().strip()
+        hostname = popen('uname -n').read().strip()
+        kernelversion = popen('uname -r').read().strip()
+        ossystem = popen('uname -s').read().strip()
+        return ossystem,kernelversion,hardwaretype,hostname
 
-architectures()
 arch = architectures()[2]
 
 ############################################################################
