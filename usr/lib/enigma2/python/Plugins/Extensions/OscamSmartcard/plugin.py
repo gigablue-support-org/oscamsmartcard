@@ -68,6 +68,8 @@ arch = architectures()[2]
 #arch = 'x86_64'
 #arch = 'sh4'
 #arch = 'armv7l'
+#arch = 'armv7ahf-vfp-neon'
+
 ############################################################################
 
 extrainfo=(architectures()[3] +': ' + architectures()[0]+' - '+architectures()[1]+' - '+ arch).title()
@@ -217,7 +219,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green": self.exit,"ok": self.exit,"cancel": self.exit}, -1)
 			self.exit
 		else:
-			if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc':
+			if arch != 'armv7l' and arch != 'mips' and arch != 'sh4' and arch != 'ppc' and arch != 'armv7ahf-vfp-neon':
 				list = []
 				list.append(getConfigListEntry(_("Warning"), config.plugins.OscamSmartcard.menufake, _(message23)))
 				list.append(getConfigListEntry(_(message24 +' ' + arch +' '+ message25), ))
@@ -561,9 +563,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def downloadurl(self):
 		binary = 'oscam_oscamsmartcard'
 		suffix = '.tar.gz'
-		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc':
+		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
 			downloadurl = server + binary + '_' + arch + suffix
 		else:downloadurl = 'unknown_' + arch
+		print plugin + downloadurl
 		return downloadurl
 
 	def newversion(self,arch):
