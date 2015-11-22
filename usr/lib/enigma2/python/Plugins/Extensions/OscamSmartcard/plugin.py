@@ -159,7 +159,6 @@ cardlist = [
 	("tivu", _("Tivusat")),
 	("JSC", _("JSC-sports - Viaccess")),
 	("RedlightHD", _("Redlight Elite HD - Viaccess")),
-	("FreeXTV", _("FreeX TV - Viaccess")),
 	("none", _("None"))
 	]
 
