@@ -135,7 +135,6 @@ cardlist = [
 	("V13_fast", _("Sky V13 Fastmode")),
 	("V14", _("Sky V14")),
 	("V14_fast", _("Sky V14 Fastmode")),
-	("S02", _("Sky S02")),
 	("HD01", _("HD+ HD01 white")),
 	("HD02", _("HD+ HD02 black")),
 	("I02-Beta", _("I02 Beta")),
