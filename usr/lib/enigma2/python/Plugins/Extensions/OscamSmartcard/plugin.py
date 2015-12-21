@@ -175,7 +175,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
-    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="remove active set" transparent="1" />
+    <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="make clean" transparent="1" />
     <widget name="config" position="61,114" size="590,500" scrollbarMode="showOnDemand" transparent="1" />
     <eLabel position="60,55" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
     <eLabel position="400,58" size="349,50" text="Setup" foregroundColor="unffffff" font="Regular; 30" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
@@ -545,6 +545,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	
 	def saveoscamfiles(self):	
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.srvid'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
+			system('cp -f ' + self.oscamsmartcarddata + 'oscam.srvid2'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.provid' + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.tiers'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 
@@ -564,7 +565,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
 			downloadurl = server + binary + '_' + arch + suffix
 		else:downloadurl = 'unknown_' + arch
-		print plugin + downloadurl
+		#print plugin + downloadurl
 		return downloadurl
 
 	def newversion(self,arch):
