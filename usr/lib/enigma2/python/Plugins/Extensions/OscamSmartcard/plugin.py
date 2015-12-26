@@ -15,6 +15,7 @@ from skin import parseColor
 from Components.Pixmap import Pixmap
 from Components.Label import Label
 import gettext
+import base64
 from enigma import ePicLoad
 from Tools.Directories import fileExists, resolveFilename, SCOPE_LANGUAGE, SCOPE_PLUGINS
 import os
@@ -97,7 +98,6 @@ def translateBlock(block):
 config.plugins.OscamSmartcard = ConfigSubsection()
 config.plugins.OscamSmartcard.menufake = ConfigSelection(default="-", choices = [("-", _("-"))])
 
-				# Start Softcam via Script or via Pythonstarter
 config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="script", choices = [
 				("python", _("Python SoftCamstart (openATV)")),
 				("script", _("Script SoftCamstart (openMips)"))
@@ -106,22 +106,18 @@ config.plugins.OscamSmartcard.systemclean = ConfigSelection(default="cleanall_ye
 				#("cleanall_no", _(No)),
 				("cleanall_yes", _(' '))
 				])
-				# Path to config
 config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [
 				("/usr/keys/", _("/usr/keys/ (openATV)")),
 				("/etc/tuxbox/config/", _("/etc/tuxbox/config/ (openMips)"))
 				])
-				#Oscam webifPort
 config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices = [
 				("83", _("83")),
 				("8888", _("8888"))
 				])
-				# Oscam binary online update
 config.plugins.OscamSmartcard.oscambinary = ConfigSelection(default="No", choices = [
 				("no_binaryupdate", _("No")),
 				("yes_binaryupdate", _("Yes"))
 				])
-
 config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="No", choices = [
 				("no_import", _("No")),
 				("yes_import", _("Yes"))
@@ -129,7 +125,6 @@ config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="No", choices = [
 
 #configfile.save()
 
-# Smartcard oscam.server
 cardlist = [
 	("V13", _("Sky V13")),
 	("V13_fast", _("Sky V13 Fastmode")),
@@ -166,8 +161,6 @@ config.plugins.OscamSmartcard.internalReader1 = ConfigSelection(default="none", 
 config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", choices = cardlist)
 config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices = cardlist)
 
-#######################################################################
-
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin = """
 <screen name="OscamSmartcard-Setup" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
@@ -188,7 +181,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
     <eLabel text="OscamSmartcard 2.0 by arn354 and Undertaker" position="692,70" size="540,25" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="#20000000" transparent="1" />
 </screen>
 """
-
 	def __init__(self, session, args = None, picPath = None):
 		self.config_lines = []
 		Screen.__init__(self, session)
@@ -281,7 +273,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						list.append(getConfigListEntry(_("External Reader /dev/ttyUSB0:"), config.plugins.OscamSmartcard.externalReader0, _("INFORMATION: External Reader /dev/ttyUSB0\n\nThis Reader can be used to configure for example a connected easymouse.")))
 					if self.readercheck()[3] == 'installed':
 						list.append(getConfigListEntry(_("External Reader /dev/ttyUSB1:"), config.plugins.OscamSmartcard.externalReader1, _("INFORMATION: External Reader /dev/ttyUSB1\n\nThis Reader can be used to configure for example a second connected easymouse.")))
-
 					config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="No", choices = [("no_import", _("No")),("yes_import", _("Yes"))])
 					anzcc= self.cccamcheck()[1]
 					anzus= self.cccamcheck()[5]
@@ -289,9 +280,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					cccport= self.cccamcheck()[6]
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(_("CCcam.cfg found. " + message33 +'?'), config.plugins.OscamSmartcard.cccam, _("Oscamsmartcard found " + str(anzcc+anz35) +" Server and " + str(anzus) + " User in CCCam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
-					
 					list.append(getConfigListEntry(_(message04),config.plugins.OscamSmartcard.oscambinary,_('INFORMATION: ' + message02 + '\n\ninstalled\t: ' + self.currentversion() + '\n' + message06 + '\t: ' + onlineavaible )))
-
+					list.append(getConfigListEntry(_("------------------------------------------------------------------------------------------------"), ))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
 					self.onLayoutFinish.append(self.UpdatePicture)
@@ -374,7 +364,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('mkdir ' + config.plugins.OscamSmartcard.ConfigPath.value + ' > /dev/null 2>&1')
 		except:
 			pass
-		#configfile.save()
 		self.makebackup()
 		self.saveoscamserver()
 		self.saveoscamdvbapi()
@@ -385,7 +374,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if config.plugins.OscamSmartcard.oscambinary.value == 'yes_binaryupdate':
 			self.oscambinaryupdate()
 		self.savecamstart()
-		#configfile.save()
 		if imagename == 'Openatv':
 			system ('/usr/bin/oscam_oscamsmartcard -b -c /usr/keys > /dev/null 2>&1')
 		elif imagename == 'Openmips':
@@ -399,7 +387,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		#Finish ENDE
 	
 	def createoscamsmartcarddata(self):
-		data = 'wget -O /tmp/data.zip '+ server +'data.zip ' + null
+		data = 'wget -O /tmp/data.zip '+ base64.b64decode(srv) +'data.zip ' + null
 		popen(data)
 		popen('unzip -o -q -d /tmp /tmp/data.zip')
 		popen('rm /tmp/data.zip')
@@ -428,7 +416,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -rf ' + self.oscamserverTMP)
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam.server!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message40), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 
 	def saveoscamdvbapi(self):
@@ -450,7 +438,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -rf ' + self.oscamdvbapiTMP)
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam.dvbapi!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message35), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 
 	def saveoscamuser(self):
@@ -495,7 +483,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -rf ' + self.oscamuserTMP)
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam.user!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message36), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 
 	def saveoscamconf(self):
@@ -517,7 +505,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -rf ' + self.oscamconfTMP)
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam.conf!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message37), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 
 	def saveoscamservices(self):
@@ -540,7 +528,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -rf ' + self.oscamservicesTMP)
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam.services!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message38), MessageBox.TYPE_ERROR)
 			self.config_lines = []
 	
 	def saveoscamfiles(self):	
@@ -563,9 +551,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		binary = 'oscam_oscamsmartcard'
 		suffix = '.tar.gz'
 		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
-			downloadurl = server + binary + '_' + arch + suffix
+			downloadurl = base64.b64decode(srv) + binary + '_' + arch + suffix
 		else:downloadurl = 'unknown_' + arch
-		#print plugin + downloadurl
 		return downloadurl
 
 	def newversion(self,arch):
@@ -573,7 +560,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if self.onlinecheck() == True:
 			upgfile = '/tmp/upgrade.log'
 			system('touch ' + upgfile)
-			system('wget -O ' + upgfile + ' ' + infourl  +null )
+			system('wget -O ' + upgfile + ' ' + base64.b64decode(info) + null )
 			file = open(upgfile, "r")
 			for line in file.readlines():
 				line = line.strip().split(',')
@@ -644,10 +631,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			i = 0
 			while i < len(a):
 				system('opkg remove --force-remove ' +a[i] + null)
-				print plugin + message21 +' ' + a[i]
 				i = i + 1
-		else:
-			print plugin + message18
 
 	def savecamstart(self):
 		try:
@@ -667,26 +651,20 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('chmod 777 /etc/init.d/cardserver.*')
 				system('update-rc.d softcam  defaults ' + null)
 				system('update-rc.d cardserver defaults ' + null)
-				print plugin +'create camstart files  ... done'
 				config.plugins.OscamSmartcard.oscambinary.setValue("no_binaryupdate")
 				configfile.save()
-				
-
 			if imagename =='Openatv':
-				print plugin +'create camstart files for OpenATV..'
 				system('killall -9 oscam_oscamsmartcard' + null)
 				system('rm -f /etc/oscamsmartcard.emu')
 				system('cp -f /tmp/data/oscamsmartcard.emu /etc/oscamsmartcard.emu')
 				config.softcam.actCam.setValue("OscamSmartcard")
 				config.softcam.actCam2.setValue("None")
 				config.softcam.save()
-				#configfile.save()
-				print plugin +'create camstart files  ... done'
 			self.config_lines = []
 		except:
-			self.session.open(MessageBox, _("Error creating oscam camstart files!"), MessageBox.TYPE_ERROR)
+			self.session.open(MessageBox, _(message39), MessageBox.TYPE_ERROR)
 			self.config_lines = []
-		
+
 	def appendconfFile(self,appendFileName):
 		skFile = open(appendFileName, "r")
 		file_lines = skFile.readlines()
@@ -703,14 +681,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			
 	def restartSTB(self, answer):
 		if answer is True:
-			#configfile.save()
 			system('reboot')
 		else:
 			self.close()
 	
 	def onlinecheck(self):
 		try:
-			response=urllib2.urlopen('http://192.185.41.27',timeout=1)
+			response=urllib2.urlopen(base64.b64decode(ipx),timeout=1)
 			return True
 		except urllib2.URLError as err: pass
 		return False
@@ -806,7 +783,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			p.close()
 		return cccsrv,xc,cccuser,yc,ccconfig,zc,cccport
 
-##################
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 
