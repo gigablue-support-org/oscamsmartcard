@@ -589,8 +589,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		f = popen('opkg list-installed |grep -i softcam')
 		for line in f:
 		        line=line.strip().split()
-		        if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5:
-		            liste.append(line[0])
+		        if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5 and line[0] !=ignore6 and line[0] !=ignore7:
+		        	liste.append(line[0])
 		f.close()
 		return liste
 
