@@ -163,7 +163,7 @@ config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", 
 
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin = """
-<screen name="OscamSmartcard-Setup" position="0,0" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
+<screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
     <eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="#20000000" transparent="0" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
     <eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
@@ -719,22 +719,20 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.close()
 		else:
 			return
-	
+
 	def cccamcheck(self):
-		cccsrv='';cccuser='';ccconfig='';cccport='0'
+		cccsrv='';cccuser='';ccconfig='';cccport='12000'
 		xc=0;yc=0;zc=0
 		if os.path.exists('/etc/CCcam.cfg'):
 			i=0;C='C';c='c';y=0; F='F';f='f';l='l';L='L'
-			xx=c,l,C,L
 			cclines= ('c:','C:')
 			camd35lines = ('l:','L:')
 			userline = ('f','F')
-			X='SERVER LISTEN PORT'
 			datei = open("/etc/CCcam.cfg","r")
 			for line in datei.readlines():
 				line = line.strip().split('#')[0]
 				line = line.split('{')[0]
-				if line.startswith(('c','C','l','L','F','f','X')):
+				if line.startswith((c,C,l,L,F,f,'SERVER LISTEN PORT')):
 					line=line.replace("\t"," ").replace(" :",":").replace(": ",":").replace(" :",":").replace(": ",":").replace("  "," ")
 					if line.startswith(cclines) or line.startswith(camd35lines):
 						if line.startswith(cclines) :protokoll='cccam'
@@ -746,14 +744,28 @@ class OscamSmartcard(ConfigListScreen, Screen):
 							i=i+1
 							server = line[0]
 							port = line[1];user = line[2];passwd = line[3]
+							#IP check
+							parts = server.split(".")
+							end = str(parts[len(parts)-1])
+							if "0" in end or "1" in end or "2" in end or "3" in end or "4" in end or "5" in end or "6" in end or "7" in end or "8" in end or "9" in end:
+								#server ist a IP not a domain
+								servername ="IP"
+							else:
+								servername =parts[0]
 							if protokoll=='cccam':
 								xc +=1
-								servername = 'cccamserver'+ str(xc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\n'
+								if servername == "IP":
+									#servername="cccam"
+									servername=server.replace(".","-")
+								servername =  servername+"_"+str(xc)
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t= '+' CCcam-Server:  '+ server + ':' + port +'\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\n'
 							if protokoll=='cs357x':
 								yc +=1
-								servername = 'camd35server'+ str(yc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\n'
+								if servername == "IP":
+									#servername="camd35"
+									servername=server.replace(".","-")
+								servername = servername+"_"+str(yc)
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t= ' + 'Camd35-Server:  ' + server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\n'
 							cccsrv += peer
 					elif line.startswith(userline):
 						zc=zc+1
@@ -761,16 +773,12 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						line = line[1]
 						line = line.split()
 						if len(line)>1:
-						    cuser = line[0];cpass = line[1]
-						    user= '\n[account]\nuser\t\t\t = ' + line[0] + '\npwd\t\t\t = ' +line[1] + '\nuniq\t\t\t = 3\ngroup\t\t\t = 1\n'
-						    cccuser += user
-				else:
-					line = line.upper()
-					cccport = '12000'
-					if line.startswith('SERVER LISTEN PORT'):
-					    line = line.split(':')[1].strip()
-					    cccport = line
-					ccconfig = '\n[cccam]\nport\t\t\t = '+cccport+'\nnodeid\t\t\t = \nversion\t\t\t = 2.3.0\nreshare\t\t\t = 2\nreshare_mode\t\t = 1\nupdateinterval\t\t = 240\nrecv_timeout\t\t = 5000\n'
+							cuser = line[0];cpass = line[1]
+							user= '\n[account]\nuser\t\t\t = ' + line[0] + '\npwd\t\t\t = ' +line[1] + '\nuniq\t\t\t = 3\ngroup\t\t\t = 1\n'
+							cccuser += user
+					elif line.startswith('SERVER LISTEN PORT'):
+						cccport = line.split(':')[1]
+					ccconfig = '\n[cccam]\nport\t\t\t = '+cccport+'\nnodeid\t\t\t = \nversion\t\t\t = 2.3.0\nreshare\t\t\t = 2\nstealth\t\t\t = 1\n'
 			datei.close()
 			h = open(self.oscamsmartcarddata + "cccamconfig.txt","w")
 			h.write(ccconfig)
@@ -780,7 +788,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			o.close()
 			p = open(self.oscamsmartcarddata + "cccamuser.txt","w")
 			p.write(cccuser)
-			p.close()
+			p.close()			
 		return cccsrv,xc,cccuser,yc,ccconfig,zc,cccport
 
 def main(session, **kwargs):
