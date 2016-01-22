@@ -4,6 +4,5 @@ Description: OscamSmartcard 2.0 - Oscam the easy way
 Section: base
 Architecture: mipsel
 Priority: optional
-Maintainer: unknown
+Maintainer: Undertaker
 License: unknown
-#Depends: enigma2-plugin-pli-softcamsetup
