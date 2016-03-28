@@ -127,23 +127,23 @@ config.plugins.OscamSmartcard.internalReader1 = ConfigSelection(default="none", 
 config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", choices = cardlist)
 config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices = cardlist)
 class OscamSmartcard(ConfigListScreen, Screen):
-	skin = """
+	skin ="""
 <screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
-	<eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="#20000000" transparent="0" />
+	<eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="black" transparent="0" />
 	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
 	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
 	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
 	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="make clean" transparent="1" />
-	<widget name="config" position="61,114" size="590,500" scrollbarMode="showOnDemand" transparent="1" />
-	<eLabel position="60,55" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
-	<eLabel position="400,58" size="349,50" text="Setup" foregroundColor="unffffff" font="Regular; 30" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
+	<widget name="config" position="61,114" size="590,380" scrollbarMode="showOnDemand" transparent="1" backgroundColor="black" />
+	<eLabel position="62,48" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
+	<eLabel position="417,48" size="451,50" text="Setup" foregroundColor="unffffff" font="Regular; 40" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
 	<eLabel position="665,640" size="5,40" backgroundColor="#e5dd00" />
 	<eLabel position="360,640" size="5,40" backgroundColor="#61e500" />
 	<eLabel position="60,640" size="5,40" backgroundColor="#e61700" />
 	<eLabel position="965,640" size="5,40" backgroundColor="#0000ff" />
-	<widget name="oscamsmartcardhelperimage" position="669,112" size="550,500" zPosition="1" />
-	<widget name="HELPTEXT" position="61,500" size="590,250" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="#20000000" transparent="1" />
-    <eLabel text="OscamSmartcard 2.0 by arn354 and Undertaker" position="692,70" size="540,25" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="#20000000" transparent="1" />
+	<widget name="oscamsmartcardhelperimage" position="669,112" size="550,500" zPosition="1" backgroundColor="background" />
+	<widget name="HELPTEXT" position="61,500" size="590,110" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="black" transparent="1" />
+    <eLabel text="OscamSmartcard 2.0 by arn354 and Undertaker" position="874,48" size="360,25" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="#20000000" transparent="1" />
 </screen>"""
 	def __init__(self, session, args = None, picPath = None):
 		self.config_lines = []
@@ -226,7 +226,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					list.append(getConfigListEntry(( _("Camstart set automatically to") + '\t: ' + camstartname), ))
 					list.append(getConfigListEntry(( _("Oscam type set automatically to") + '\t: ' + arch), ))
 					list.append(getConfigListEntry(( _("Cardreader found automatically")  + '\t: ' + str(self.readercheck()[4])  ), ))
-					list.append(getConfigListEntry(("-------------------------------------------------------------------------------------------------"), ))
+					list.append(getConfigListEntry(("............................................. Manual Config .........................................."), ))
+					
 					list.append(getConfigListEntry(_("Select OScam WebifPort:"), config.plugins.OscamSmartcard.WebifPort, _("INFORMATION: Select OScam WebifPort\n\nOscam Webif will be accessible on the selected port.\ne.g. http:\\IPOFYOURBOX:83")))
 					if self.readercheck()[0] == 'installed':
 						list.append(getConfigListEntry(_("Internal Reader /dev/sci0:"), config.plugins.OscamSmartcard.internalReader0, _("INFORMATION: Internal Reader /dev/sci0\n\nAll STB's having only one cardslot.\nOn STB's having two cardslots it is mostly the lower cardslot.")))
@@ -243,7 +244,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCCam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
 					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
-					list.append(getConfigListEntry("-------------------------------------------------------------------------------------------------", ))
+					list.append(getConfigListEntry("---------------------------------------------------------------------------------------------------", ))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
 					self.onLayoutFinish.append(self.UpdatePicture)
