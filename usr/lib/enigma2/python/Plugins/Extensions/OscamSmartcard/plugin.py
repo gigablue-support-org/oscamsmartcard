@@ -120,6 +120,7 @@ cardlist = [
 	("tivu", "Tivusat"),
 	("JSC", "JSC-sports - Viaccess"),
 	("RedlightHD", "Redlight Elite HD - Viaccess"),
+	("default", "Standard 357/357 MHz"),
 	("none", _("None"))
 	]
 config.plugins.OscamSmartcard.internalReader0 = ConfigSelection(default="none", choices = cardlist)
