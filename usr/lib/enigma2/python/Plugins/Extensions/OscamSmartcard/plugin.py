@@ -31,6 +31,7 @@ ignore4='enigma2-plugin-softcams-cccam.config'
 ignore5='enigma2-plugin-softcams-mgcamd.config'
 ignore6='enigma2-plugin-systemplugins-softcamstartup'
 ignore7='enigma2-plugin-systemplugins-softcamstartup-src'
+ignore8='softcam-feed-mipsel'
 info = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLmluZm8='
 srv = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC8='
 ipx = 'aHR0cDovLzE5Mi4xODUuNDEuMjc='
@@ -92,6 +93,10 @@ config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="no_cccam_import"
 				("no_cccam_import", _("No")),
 				("yes_cccam_import", _("Yes"))
 				])
+config.plugins.OscamSmartcard.emu  = ConfigSelection(default="no_emu", choices = [
+				("no_emu", _("No")),
+				("yes_emu", _("Yes"))
+				])
 cardlist = [
 	("V13", "Sky V13"),
 	("V13_fast", "Sky V13 Fastmode"),
@@ -131,13 +136,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	skin ="""
 <screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="#90000000">
 	<eLabel name="new eLabel" position="40,40" zPosition="-2" size="1200,640" backgroundColor="black" transparent="0" />
-	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
-	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
-	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
-	<eLabel font="Regular; 20" foregroundColor="unffffff" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="make clean" transparent="1" />
+	<eLabel font="Regular; 20" foregroundColor="white" backgroundColor="#20000000" halign="left" position="77,645" size="250,33" text="Cancel" transparent="1" />
+	<eLabel font="Regular; 20" foregroundColor="white" backgroundColor="#20000000" halign="left" position="375,645" size="250,33" text="Start" transparent="1" />
+	<eLabel font="Regular; 20" foregroundColor="white" backgroundColor="#20000000" halign="left" position="682,645" size="250,33" text="Reboot Box" transparent="1" />
+	<eLabel font="Regular; 20" foregroundColor="white" backgroundColor="#20000000" halign="left" position="989,645" size="250,33" text="make clean" transparent="1" />
 	<widget name="config" position="61,114" size="590,380" scrollbarMode="showOnDemand" transparent="1" backgroundColor="black" />
 	<eLabel position="62,48" size="348,50" text="OscamSmartcard" font="Regular; 40" valign="center" transparent="1" backgroundColor="#20000000" />
-	<eLabel position="417,48" size="451,50" text="Setup" foregroundColor="unffffff" font="Regular; 40" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
+	<eLabel position="417,48" size="451,50" text="Setup" foregroundColor="white" font="Regular; 40" valign="center" backgroundColor="#20000000" transparent="1" halign="left" />
 	<eLabel position="665,640" size="5,40" backgroundColor="#e5dd00" />
 	<eLabel position="360,640" size="5,40" backgroundColor="#61e500" />
 	<eLabel position="60,640" size="5,40" backgroundColor="#e61700" />
@@ -228,7 +233,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					list.append(getConfigListEntry(( _("Oscam type set automatically to") + '\t: ' + arch), ))
 					list.append(getConfigListEntry(( _("Cardreader found automatically")  + '\t: ' + str(self.readercheck()[4])  ), ))
 					list.append(getConfigListEntry(("............................................. Manual Config .........................................."), ))
-					
 					list.append(getConfigListEntry(_("Select OScam WebifPort:"), config.plugins.OscamSmartcard.WebifPort, _("INFORMATION: Select OScam WebifPort\n\nOscam Webif will be accessible on the selected port.\ne.g. http:\\IPOFYOURBOX:83")))
 					if self.readercheck()[0] == 'installed':
 						list.append(getConfigListEntry(_("Internal Reader /dev/sci0:"), config.plugins.OscamSmartcard.internalReader0, _("INFORMATION: Internal Reader /dev/sci0\n\nAll STB's having only one cardslot.\nOn STB's having two cardslots it is mostly the lower cardslot.")))
@@ -245,6 +249,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCCam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
 					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
+					if getImageDistro() =='openatv':
+						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
 					list.append(getConfigListEntry("---------------------------------------------------------------------------------------------------", ))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
@@ -363,6 +369,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def saveoscamserver(self):
 		try:
 			self.appendconfFile(self.oscamsmartcarddata + "header.txt")
+			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
+				self.appendconfFile(self.oscamsmartcarddata + "oscam.server_emu.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.internalReader0.value + "_internalReader0.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.internalReader1.value + "_internalReader1.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.server_" + config.plugins.OscamSmartcard.externalReader0.value + "_externalReader0.txt")
@@ -454,7 +462,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def saveoscamconf(self):
 		try:
 			self.appendconfFile(self.oscamsmartcarddata + "header.txt")
-			self.appendconfFile(self.oscamsmartcarddata + "oscam.conf.txt")
+			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
+				self.appendconfFile(self.oscamsmartcarddata + "oscam.conf.emu.txt")
+			else:
+				self.appendconfFile(self.oscamsmartcarddata + "oscam.conf.txt")
 			if config.plugins.OscamSmartcard.cccam.value =='yes_cccam_import':
 				self.appendconfFile(self.oscamsmartcarddata + "cccamconfig.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "footer.txt")
@@ -497,6 +508,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.config_lines = []
 
 	def saveoscamfiles(self):
+			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
+				system('cp -f ' + self.oscamsmartcarddata + 'SoftCam.Key'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.srvid'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.srvid2'  + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
 			system('cp -f ' + self.oscamsmartcarddata + 'oscam.provid' + ' ' + config.plugins.OscamSmartcard.ConfigPath.value)
@@ -515,8 +528,12 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def downloadurl(self):
 		binary = 'oscam_oscamsmartcard'
 		suffix = '.tar.gz'
+		emu=''
+		if getImageDistro() =='openatv':
+			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
+				emu='_emu'
 		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
-			downloadurl = base64.b64decode(srv) + binary + '_' + arch + suffix
+			downloadurl = base64.b64decode(srv) + binary + '_' + arch + emu + suffix
 		else:downloadurl = 'unknown_' + arch
 		return downloadurl
 
@@ -554,7 +571,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		f = popen('opkg list-installed |grep -i softcam')
 		for line in f:
 			line=line.strip().split()
-			if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5 and line[0] !=ignore6 and line[0] !=ignore7:
+			if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5 and line[0] !=ignore6 and line[0] !=ignore7 and line[0] !=ignore8:
 				liste.append(line[0])
 		f.close()
 		return liste
@@ -678,6 +695,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('rm -f /etc/oscamsmartcard.emu' + null)
 			system('rm -rf /tmp/data' + null)
 			system('rm -f /tmp/upgrade.log' + null)
+			popen('rm -rf /tmp/.oscam' + null)
 			self.valuedefaultsettings()
 			self.close()
 		else:
@@ -694,6 +712,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		config.plugins.OscamSmartcard.internalReader1.value = "none"
 		config.plugins.OscamSmartcard.externalReader0.value = "none"
 		config.plugins.OscamSmartcard.externalReader1.value = "none"
+		config.plugins.OscamSmartcard.emu.value = "no_emu"
 		config.plugins.OscamSmartcard.save()        
 		configfile.save()
 		return
