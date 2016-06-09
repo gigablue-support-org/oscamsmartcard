@@ -97,6 +97,12 @@ config.plugins.OscamSmartcard.emu  = ConfigSelection(default="no_emu", choices =
 				("no_emu", _("No")),
 				("yes_emu", _("Yes"))
 				])
+config.plugins.OscamSmartcard.hasciplus  = ConfigSelection(default="no_ciplus", choices = [
+				("no_ciplus", _("None")),
+				("ciplusV13", _("CI+ V13")),
+				("ciplusV14", _("CI+ V14"))
+				])
+		
 cardlist = [
 	("V13", "Sky V13"),
 	("V13_fast", "Sky V13 Fastmode"),
@@ -225,6 +231,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						camstartname='SoftcamManager'
 						config.plugins.OscamSmartcard.Camstart.value = "openmips"
 						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+					
 					list.append(getConfigListEntry("-------------------------------------- Auto Config----------------------------------------", config.plugins.OscamSmartcard.menufake, _("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically")))
 					list.append(getConfigListEntry(_(ImageTypeInfo), ))
 					list.append(getConfigListEntry((extrainfo), ))
@@ -251,6 +258,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
 					if getImageDistro() =='openatv':
 						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
+					if getImageDistro() =='openatv':
+						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
+					list.append(getConfigListEntry(_("Which Ci+Module is installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
 					list.append(getConfigListEntry("---------------------------------------------------------------------------------------------------", ))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
@@ -395,11 +405,18 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def saveoscamdvbapi(self):
 		try:
 			self.appendconfFile(self.oscamsmartcarddata + "header.txt")
+			if config.plugins.OscamSmartcard.hasciplus.value =='ciplusV14':
+				self.appendconfFile(self.oscamsmartcarddata + "ciplusV14.txt")
+			if config.plugins.OscamSmartcard.hasciplus.value =='ciplusV13':
+				self.appendconfFile(self.oscamsmartcarddata + "ciplusV13.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.internalReader0.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.internalReader1.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.externalReader0.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.externalReader1.value + ".txt")
+			if config.plugins.OscamSmartcard.cccam.value !='yes_cccam_import':
+				self.appendconfFile(self.oscamsmartcarddata + "caidfinish.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "footer.txt")
+	
 			xFile = open(self.oscamdvbapiTMP, "w")
 			for xx in self.config_lines:
 				xFile.writelines(xx)
@@ -532,6 +549,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if getImageDistro() =='openatv':
 			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
 				emu='_emu'
+		if getImageDistro() =='openmips':
+			if config.plugins.OscamSmartcard.emu.value =='yes_emu':
+				emu='_emu'
 		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
 			downloadurl = base64.b64decode(srv) + binary + '_' + arch + emu + suffix
 		else:downloadurl = 'unknown_' + arch
@@ -563,7 +583,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					currentversion= line[1]
 			f.close()
 		else:
-				currentversion=_("no oscam_oscamsmartcard found")
+			currentversion=_("no oscam_oscamsmartcard found")
 		return currentversion
 
 	def checkallcams(self):
@@ -713,6 +733,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		config.plugins.OscamSmartcard.externalReader0.value = "none"
 		config.plugins.OscamSmartcard.externalReader1.value = "none"
 		config.plugins.OscamSmartcard.emu.value = "no_emu"
+		config.plugins.OscamSmartcard.hasciplus.value = "no_ciplus"
 		config.plugins.OscamSmartcard.save()        
 		configfile.save()
 		return
