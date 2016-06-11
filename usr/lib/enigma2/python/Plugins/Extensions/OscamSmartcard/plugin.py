@@ -258,8 +258,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
 					if getImageDistro() =='openatv':
 						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
-					if getImageDistro() =='openatv':
-						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
 					list.append(getConfigListEntry(_("Which Ci+Module is installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
 					list.append(getConfigListEntry("---------------------------------------------------------------------------------------------------", ))
 					ConfigListScreen.__init__(self, list)
