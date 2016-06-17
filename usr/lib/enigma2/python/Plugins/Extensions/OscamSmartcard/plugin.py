@@ -119,6 +119,7 @@ cardlist = [
 	("SRG-V2", "SRG V2"),
 	("SRG-V4", "SRG V4"),
 	("SRG-V5", "SRG V5"),
+	("SRG-V6", "SRG V6"),
 	("UM01", "UnityMedia UM01"),
 	("UM02", "UnityMedia UM02"),
 	("UM03", "UnityMedia UM03"),
@@ -231,7 +232,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						camstartname='SoftcamManager'
 						config.plugins.OscamSmartcard.Camstart.value = "openmips"
 						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
-					
 					list.append(getConfigListEntry("-------------------------------------- Auto Config----------------------------------------", config.plugins.OscamSmartcard.menufake, _("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically")))
 					list.append(getConfigListEntry(_(ImageTypeInfo), ))
 					list.append(getConfigListEntry((extrainfo), ))
