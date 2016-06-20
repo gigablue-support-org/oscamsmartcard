@@ -31,7 +31,8 @@ ignore4='enigma2-plugin-softcams-cccam.config'
 ignore5='enigma2-plugin-softcams-mgcamd.config'
 ignore6='enigma2-plugin-systemplugins-softcamstartup'
 ignore7='enigma2-plugin-systemplugins-softcamstartup-src'
-ignore8='softcam-feed-mipsel'
+ignore8='softcam-feed-mipsel' #atv feed
+ignore9='om-softcam-support'
 info = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLmluZm8='
 srv = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC8='
 ipx = 'aHR0cDovLzE5Mi4xODUuNDEuMjc='
@@ -71,15 +72,15 @@ config.plugins.OscamSmartcard = ConfigSubsection()
 config.plugins.OscamSmartcard.menufake = ConfigSelection(default="-", choices = [("-", "-")])
 
 config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="openmips", choices = [
-				("openmips", _("Script SoftCamstart (openMips)")),
-				("openatv", _("Python SoftCamstart (openATV)"))
+				("openmips", "Script SoftCamstart (openMips)"),
+				("openatv", "Python SoftCamstart (openATV)")
 				])
 config.plugins.OscamSmartcard.systemclean = ConfigSelection(default="cleanall_yes", choices = [
-				("cleanall_yes", _(' '))
+				("cleanall_yes", ' ')
 				])
 config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [
-				("/usr/keys/", _("/usr/keys/ (openATV)")),
-				("/etc/tuxbox/config/", _("/etc/tuxbox/config/ (openMips)"))
+				("/usr/keys/", "/usr/keys/ (openATV)"),
+				("/etc/tuxbox/config/", "/etc/tuxbox/config/ (openMips)")
 				])
 config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices = [
 				("83", _("83")),
@@ -98,11 +99,11 @@ config.plugins.OscamSmartcard.emu  = ConfigSelection(default="no_emu", choices =
 				("yes_emu", _("Yes"))
 				])
 config.plugins.OscamSmartcard.hasciplus  = ConfigSelection(default="no_ciplus", choices = [
-				("no_ciplus", _("None")),
+				("no_ciplus", _("No")),
 				("ciplusV13", _("CI+ V13")),
 				("ciplusV14", _("CI+ V14"))
 				])
-		
+
 cardlist = [
 	("V13", "Sky V13"),
 	("V13_fast", "Sky V13 Fastmode"),
@@ -156,7 +157,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	<eLabel position="965,640" size="5,40" backgroundColor="#0000ff" />
 	<widget name="oscamsmartcardhelperimage" position="669,112" size="550,500" zPosition="1" backgroundColor="background" />
 	<widget name="HELPTEXT" position="61,500" size="590,110" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="black" transparent="1" />
-    <eLabel text="OscamSmartcard 2.0 by arn354 and Undertaker" position="874,48" size="360,25" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="#20000000" transparent="1" />
+    <eLabel text="OscamSmartcard 2.1 by arn354 and Undertaker" position="874,48" size="360,25" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="#20000000" transparent="1" />
 </screen>"""
 	def __init__(self, session, args = None, picPath = None):
 		self.config_lines = []
@@ -189,7 +190,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				list = []
 				list.append(getConfigListEntry(_("Warning"), config.plugins.OscamSmartcard.menufake, _("press color button or lame for exit")))
 				list.append(getConfigListEntry((_("Unsupportet CPU") +' ' + arch +' '+ _("found")), ))
-				list.append(getConfigListEntry(_(extrainfo), ))
+				list.append(getConfigListEntry(_("OScam can not be installed"), ))
+				list.append(getConfigListEntry( " ", ))
 				list.append(getConfigListEntry(_("press color button or lame for exit"), ))
 				ConfigListScreen.__init__(self, list)
 				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green":self.exit,"ok": self.exit,"cancel": self.exit}, -1)
@@ -199,7 +201,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				anzahl = len(a)
 				if len(a)>0:
 					list = []
-					list.append(getConfigListEntry( ( _("Warning")  + " : " +str(anzahl) +' '+ _("valueless Softam found. Press GREEN to remove")   ), config.plugins.OscamSmartcard.systemclean, ( _("Remove all first.\notherwise Oscamsmartcard will not start\nPress GREEN to remove all") + '\n' + _("All config files are backed up automatically"))))
+					list.append(getConfigListEntry( ( _("Warning")  + " : " +str(anzahl) +' '+ _("valueless Softam found. Press GREEN to remove")   ), config.plugins.OscamSmartcard.systemclean, ( _("Remove all first.\notherwise Oscamsmartcard will not start\nPress GREEN to remove all")  )))
 					i=0
 					while i < len(a):
 						title = a[i].replace("enigma2-plugin-softcams-",'')
@@ -232,14 +234,14 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						camstartname='SoftcamManager'
 						config.plugins.OscamSmartcard.Camstart.value = "openmips"
 						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
-					list.append(getConfigListEntry("-------------------------------------- Auto Config----------------------------------------", config.plugins.OscamSmartcard.menufake, _("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically")))
-					list.append(getConfigListEntry(_(ImageTypeInfo), ))
-					list.append(getConfigListEntry((extrainfo), ))
+					list.append(getConfigListEntry( ImageTypeInfo, config.plugins.OscamSmartcard.menufake, _("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically")))
+					list.append(getConfigListEntry((extrainfo),))
 					list.append(getConfigListEntry(( _("Config path set automatically to") + '\t: '+ config.plugins.OscamSmartcard.ConfigPath.value), ))
 					list.append(getConfigListEntry(( _("Camstart set automatically to") + '\t: ' + camstartname), ))
 					list.append(getConfigListEntry(( _("Oscam type set automatically to") + '\t: ' + arch), ))
 					list.append(getConfigListEntry(( _("Cardreader found automatically")  + '\t: ' + str(self.readercheck()[4])  ), ))
-					list.append(getConfigListEntry(("............................................. Manual Config .........................................."), ))
+					list.append(getConfigListEntry((" "),))
+					list.append(getConfigListEntry(_("Settings:")))
 					list.append(getConfigListEntry(_("Select OScam WebifPort:"), config.plugins.OscamSmartcard.WebifPort, _("INFORMATION: Select OScam WebifPort\n\nOscam Webif will be accessible on the selected port.\ne.g. http:\\IPOFYOURBOX:83")))
 					if self.readercheck()[0] == 'installed':
 						list.append(getConfigListEntry(_("Internal Reader /dev/sci0:"), config.plugins.OscamSmartcard.internalReader0, _("INFORMATION: Internal Reader /dev/sci0\n\nAll STB's having only one cardslot.\nOn STB's having two cardslots it is mostly the lower cardslot.")))
@@ -255,11 +257,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					cccport= self.cccamcheck()[6]
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCCam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
-					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
+					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
 					if getImageDistro() =='openatv':
-						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
-					list.append(getConfigListEntry(_("Which Ci+Module is installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
-					list.append(getConfigListEntry("---------------------------------------------------------------------------------------------------", ))
+						if arch =='mips':
+							list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
+					list.append(getConfigListEntry(_("Is a Ci+Module installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.reboot, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
 					self.onLayoutFinish.append(self.UpdatePicture)
@@ -307,8 +309,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.ShowPicture()
 
 	def reboot(self):
-		restartbox = self.session.openWithCallback(self.restartSTB,MessageBox,_("Do you really want to reboot now?"), MessageBox.TYPE_YESNO)
-		restartbox.setTitle(_("Restart STB"))
+		restartbox = self.session.openWithCallback(self.restartSTB,MessageBox,_("Do you really want to reboot now ?"), MessageBox.TYPE_YESNO)
+		restartbox.setTitle(_("Restart") + " " + getMachineBrand() + '-'+  getMachineName())
 
 	def systemcleaning(self):
 		systemclean = self.session.openWithCallback(self.systemclean,MessageBox,_(_("All Softcams will be deinstalled\nAre you sure ?")), MessageBox.TYPE_YESNO)
@@ -361,7 +363,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.close()
 		config.plugins.OscamSmartcard.save()        
 		configfile.save()
-		self.session.open(MessageBox, ( _("Oscam is now running") +'\n' + self.newversion(arch) + '\n' + getImageDistro()  +' ' + getImageVersion() ), MessageBox.TYPE_INFO,10)
+		
+		if config.plugins.OscamSmartcard.oscambinary.value == "yes_binary_install":
+			self.session.open(MessageBox, ( _("Oscam is now running") +'\n' + self.newversion(arch) + '\n' + getImageDistro()  +' ' + getImageVersion() ), MessageBox.TYPE_INFO,10)
+		else:
+			self.session.open(MessageBox, ( _("Oscam Binary is not installed\nYou must this install")  ), MessageBox.TYPE_ERROR,10)
+			return
+
 		self.rmoscamsmartcarddata()
 		self.close()
 
@@ -411,10 +419,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.internalReader1.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.externalReader0.value + ".txt")
 			self.appendconfFile(self.oscamsmartcarddata + "oscam.dvbapi_" + config.plugins.OscamSmartcard.externalReader1.value + ".txt")
-			if config.plugins.OscamSmartcard.cccam.value !='yes_cccam_import':
-				self.appendconfFile(self.oscamsmartcarddata + "caidfinish.txt")
 			self.appendconfFile(self.oscamsmartcarddata + "footer.txt")
-	
 			xFile = open(self.oscamdvbapiTMP, "w")
 			for xx in self.config_lines:
 				xFile.writelines(xx)
@@ -552,6 +557,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				emu='_emu'
 		if arch == 'armv7l' or arch == 'mips' or arch == 'sh4' or arch == 'ppc' or arch == 'armv7ahf-vfp-neon':
 			downloadurl = base64.b64decode(srv) + binary + '_' + arch + emu + suffix
+			#overwrite if Box is a WeTeKPLAY
+			if getMachineBrand() =='WeTeK':
+				downloadurl = base64.b64decode(srv) + binary + '_' + 'wetekplay' + suffix
 		else:downloadurl = 'unknown_' + arch
 		return downloadurl
 
@@ -589,7 +597,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		f = popen('opkg list-installed |grep -i softcam')
 		for line in f:
 			line=line.strip().split()
-			if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5 and line[0] !=ignore6 and line[0] !=ignore7 and line[0] !=ignore8:
+			if line[0] != ignore1 and line[0] != ignore2 and line[0] != ignore3 and line[0] !=ignore4  and line[0] !=ignore5 and line[0] !=ignore6 and line[0] !=ignore7 and line[0] !=ignore8 and line[0] !=ignore9:
 				liste.append(line[0])
 		f.close()
 		return liste
@@ -806,4 +814,4 @@ class OscamSmartcard(ConfigListScreen, Screen):
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 def Plugins(**kwargs):
-	return PluginDescriptor(name="Oscam Smartcard v2.0", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
+	return PluginDescriptor(name="Oscam Smartcard v2.1", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
