@@ -1,6 +1,6 @@
 Package: enigma2-plugin-softcams-oscamsmartcard
-Version: 20160620
-Description: OscamSmartcard 2.1 - Oscam the easy way
+Version: 20161013
+Description: OscamSmartcard 2.2 - Oscam the easy way
 Section: base
 Architecture: mipsel
 Priority: optional
