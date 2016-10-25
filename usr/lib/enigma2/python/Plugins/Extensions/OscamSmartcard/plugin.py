@@ -253,7 +253,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					cccport= self.cccamcheck()[6]
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCCam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
-					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online avaible") + '\t: ' + onlineavaible )))
+					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online") + '\t: ' + onlineavaible )))
 					if getImageDistro() =='openatv' and arch =='mips':
 						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
 					list.append(getConfigListEntry(_("Is a Ci+ Module installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))

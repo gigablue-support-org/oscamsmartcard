@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-09-18 00:47+0200\n"
-"PO-Revision-Date: 2016-10-13 20:55+0200\n"
+"POT-Creation-Date: 2016-10-17 21:12+0200\n"
+"PO-Revision-Date: 2016-10-17 21:12+0200\n"
 "Last-Translator: Undertaker <undertaker@undertaker.dyndns.tv>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.9\n"
+"X-Generator: Poedit 1.8.8\n"
 "X-Poedit-Basepath: ../../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: plugin.py\n"
@@ -222,8 +222,8 @@ msgid "installed"
 msgstr "installiert"
 
 #: plugin.py:256
-msgid "online avaible"
-msgstr "Online verfügbar"
+msgid "online"
+msgstr "online"
 
 #: plugin.py:258
 msgid "Install oscam EMU Version:"
@@ -301,13 +301,13 @@ msgstr "Sind die Einstellungen richtig ?"
 msgid "check your settings"
 msgstr "Überprüfe die Einstellungen"
 
-#: plugin.py:408
+#: plugin.py:407
 msgid ""
 "Oscam is not running\n"
 "unknown OS"
 msgstr "OSCam läuft nicht. Unbekanntes System"
 
-#: plugin.py:413
+#: plugin.py:412
 msgid ""
 "oscam install finished\n"
 "have fun"
@@ -315,11 +315,11 @@ msgstr ""
 "OSCam Installation abgeschlossen\n"
 "Viel Spass"
 
-#: plugin.py:413
+#: plugin.py:412
 msgid "done"
 msgstr "Erledigt"
 
-#: plugin.py:418
+#: plugin.py:417
 msgid ""
 "Oscam Binary is not installed\n"
 "You must this install"
@@ -327,43 +327,43 @@ msgstr ""
 "Das OSCam Binary wurde nicht gewählt.\n"
 "Dies wird aber benötigt!"
 
-#: plugin.py:418
+#: plugin.py:417
 msgid "wrong Settings detected"
 msgstr "ungültige Einstellungen"
 
-#: plugin.py:453
+#: plugin.py:452
 msgid "Error creating oscam.server!"
 msgstr "Fehler beim erstellen von oscam.server!"
 
-#: plugin.py:479
+#: plugin.py:478
 msgid "Error creating oscam.dvbapi!"
 msgstr "Fehler beim erstellen von oscam.dvbapi!"
 
-#: plugin.py:500
+#: plugin.py:499
 msgid "Error creating oscam.user!"
 msgstr "Fehler beim erstellen von oscam.user!"
 
-#: plugin.py:525
+#: plugin.py:524
 msgid "Error creating oscam.conf!"
 msgstr "Fehler beim erstellen von oscam.conf!"
 
-#: plugin.py:548
+#: plugin.py:547
 msgid "Error creating oscam.services!"
 msgstr "Fehler beim erstellen von oscam.services!"
 
-#: plugin.py:560 plugin.py:590
+#: plugin.py:559 plugin.py:589
 msgid "Download not avaible"
 msgstr "Download nicht verfügbar"
 
-#: plugin.py:615
+#: plugin.py:614
 msgid "no installed oscamsmartcard found"
 msgstr "nichts installiert"
 
-#: plugin.py:706
+#: plugin.py:705
 msgid "Error creating oscam camstart files!"
 msgstr "Fehler beim erstellen des Camstarts!"
 
-#: plugin.py:740
+#: plugin.py:739
 msgid ""
 "Do you really want to remove all\n"
 "oscam_smartcard configs, binary's and camstartfiles.\n"
@@ -375,43 +375,43 @@ msgstr ""
 "Empfohlen für eine saubere Neuinstallation\n"
 "Starte das Plugin anschließend neu"
 
-#: plugin.py:741
+#: plugin.py:740
 msgid "remove current config"
 msgstr "entferne OSCam Einstellungen"
 
-#: plugin.py:861
+#: plugin.py:860
 msgid "update oscamsmartcard code"
 msgstr "update OSCamSmartcard code"
 
-#: plugin.py:862
+#: plugin.py:861
 msgid "update Redlight HD Card"
 msgstr "update Redlight HD Card"
 
-#: plugin.py:863
+#: plugin.py:862
 msgid "added ORF ICE p410 Card"
 msgstr "ORF ICE p410 0D98 Karte hinzugefügt"
 
-#: plugin.py:864
+#: plugin.py:863
 msgid "remove reboot from oscamsmartcard"
 msgstr "reboot Menü in OSCamSmartcard entfernt"
 
-#: plugin.py:865
+#: plugin.py:864
 msgid "this info added"
 msgstr "Diese Information hinzugefügt"
 
-#: plugin.py:866
+#: plugin.py:865
 msgid "added SRG V6 Card"
 msgstr "SRG V6 Karte hinzugefügt"
 
-#: plugin.py:867
+#: plugin.py:866
 msgid "added CI+"
 msgstr "CI+ Menü  hinzugefügt"
 
-#: plugin.py:868
+#: plugin.py:867
 msgid "added default Reader 357 Mhz"
 msgstr "default Reader 357 Mhz  hinzugefügt"
 
-#: plugin.py:875
+#: plugin.py:874
 msgid "Configuration tool for OScam"
 msgstr "Konfigurationstool für OSCam"
 
