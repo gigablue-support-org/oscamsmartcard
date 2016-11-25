@@ -123,10 +123,10 @@ config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", 
 config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices = cardlist)
 
 class OscamSmartcard(ConfigListScreen, Screen):
-	skin ="""<screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="un90000000">
+	skin ="""<screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="black">
   <eLabel name="bg" position="40,40" zPosition="-2" size="1200,640" backgroundColor="black" transparent="0" />
-  <widget name="config" position="55,299" size="595,210" scrollbarMode="showOnDemand" transparent="1" backgroundColor="black" zPosition="1" valign="top" noWrap="1" />
-  <widget name="Title" position="60,48" size="590,50" zPosition="1" font="Regular; 40" halign="left" valign="top" backgroundColor="black" transparent="1" />
+  <widget name="config" position="55,299" size="595,210" scrollbarMode="showOnDemand" transparent="1" backgroundColor="black" zPosition="1" />
+  <widget name="Title" position="60,48" size="590,50" zPosition="1" font="Regular; 40" halign="left" backgroundColor="black" transparent="1" />
   <eLabel font="Regular; 20" zPosition="1" foregroundColor="black" halign="center" position="375,648" size="200,33" text="Cancel" transparent="1" backgroundColor="red" />
   <eLabel font="Regular; 20" zPosition="1" foregroundColor="white" halign="center" position="60,648" size="200,33" text="Start" transparent="1" backgroundColor="green" />
   <eLabel font="Regular; 20" zPosition="1" foregroundColor="black" halign="center" position="670,648" size="200,33" text="Info" transparent="1" backgroundColor="yellow" />
@@ -135,11 +135,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
   <eLabel position="60,645" zPosition="0" size="200,33" backgroundColor="green" />
   <eLabel position="375,645" zPosition="0" size="200,33" backgroundColor="red" />
   <eLabel position="965,645" zPosition="0" size="200,33" backgroundColor="blue" />
-  <widget name="oscamsmartcardhelperimage" position="671,209" size="330,300" zPosition="3" backgroundColor="black" />
-  <widget name="HELPTEXT" position="670,518" size="544,110" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="black" transparent="1" />
-  <widget name="HEADER" position="60,114" size="590,180" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="black" transparent="1" />
-  <widget name="INFOTXT" position="60,518" size="590,110" zPosition="1" font="Regular; 20" halign="left" valign="top" backgroundColor="black" transparent="1" />
-  <eLabel text="OscamSmartcard 2.2 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" valign="top" backgroundColor="un20000000" transparent="1" />
+  <widget name="oscamsmartcardhelperimage" position="671,209" size="330,300" zPosition="3" backgroundColor="black" transparent="1" />
+  <widget name="HELPTEXT" position="670,518" size="544,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
+  <widget name="HEADER" position="60,114" size="590,180" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
+  <widget name="INFOTXT" position="60,518" size="590,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
+  <eLabel text="OscamSmartcard 2.2 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png" position="958,75" size="275,250" alphatest="blend" zPosition="2" />
 </screen>"""
 
