@@ -691,8 +691,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
 				system('chmod 777 /etc/init.d/softcam.*')
 				system('chmod 777 /etc/init.d/cardserver.*')
-				system('update-rc.d softcam  defaults ' + null)
-				system('update-rc.d cardserver defaults ' + null)
+				if fileExists ('/etc/rc0.d/K20softcam'):
+					system('update-rc.d -f softcam remove && update-rc.d -f cardserver remove')
+				if not fileExists('/etc/rc0.d/K09softcam'):
+					system('update-rc.d softcam stop 09 0 1 6 . start  60 2 3 4 5 .')
+					system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
 			if getImageDistro() =='openatv':
 				system('killall -9 oscam_oscamsmartcard' + null)
 				system('rm -f /etc/oscamsmartcard.emu')
