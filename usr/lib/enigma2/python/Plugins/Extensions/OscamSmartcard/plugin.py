@@ -562,7 +562,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			system('tar -xzf /tmp/oscam.tar.gz -C /tmp' + null)
 			system('rm -f /usr/bin/oscam_oscamsmartcard' + null)
 			system('mv /tmp/oscam /usr/bin/oscam_oscamsmartcard' + null)
-			system('chmod 777 /usr/bin/oscam_oscamsmartcard')
+			system('chmod 755 /usr/bin/oscam_oscamsmartcard')
 			system('rm -f /tmp/oscam.tar.gz')
 
 	def downloadurl(self):
@@ -603,7 +603,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def currentversion(self):
 		if os.path.exists('/usr/bin/oscam_oscamsmartcard'):
-			system('chmod 777 /usr/bin/oscam_oscamsmartcard')
+			system('chmod 755 /usr/bin/oscam_oscamsmartcard')
 			f = popen('/usr/bin/oscam_oscamsmartcard -V')
 			for line in f:
 				if 'Version:' in line:
@@ -679,23 +679,21 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def savecamstart(self):
 		try:
 			if getImageDistro() =='openmips':
-				system('/etc/init.d/softcam stop')
-				system('/etc/init.d/cardserver stop')
-				system('rm -f /etc/init.d/cardserver*')
-				system('rm -f /etc/init.d/softcam*')
-				system('touch /etc/init.d/softcam.None')
-				system('touch /etc/init.d/cardserver.None')
+				system('/etc/init.d/softcam stop && /etc/init.d/cardserver stop')
+				self.initd()
+
+				system('rm -f /etc/init.d/cardserver.OscamSmartcard')
+				system('rm -f /etc/init.d/softcam.OscamSmartcard')
+
 				system('cp -f /tmp/data/softcam.OscamSmartcard /etc/init.d/softcam.OscamSmartcard')
 				system('cp -f /tmp/data/cardserver.OscamSmartcard /etc/init.d/cardserver.OscamSmartcard')
+				system('chmod 755 /etc/init.d/softcam.OscamSmartcard')
+				system('chmod 755 /etc/init.d/cardserver.OscamSmartcard')
+
+				system('rm -f /etc/init.d/softcam && rm -f /etc/init.d/cardserver')
 				system('ln -sf /etc/init.d/softcam.OscamSmartcard /etc/init.d/softcam')
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
-				system('chmod 777 /etc/init.d/softcam.*')
-				system('chmod 777 /etc/init.d/cardserver.*')
-				if fileExists ('/etc/rc0.d/K20softcam'):
-					system('update-rc.d -f softcam remove && update-rc.d -f cardserver remove')
-				if not fileExists('/etc/rc0.d/K09softcam'):
-					system('update-rc.d softcam stop 09 0 1 6 . start  60 2 3 4 5 .')
-					system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
+
 			if getImageDistro() =='openatv':
 				system('killall -9 oscam_oscamsmartcard' + null)
 				system('rm -f /etc/oscamsmartcard.emu')
@@ -752,10 +750,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('rm -f /etc/oscamsmartcard.emu' + null)
 			if getImageDistro() =='openmips':
 				system('rm -f /etc/tuxbox/config/oscam.*' + null)
-				system('rm /etc/init.d/softcam /etc/init.d/softcam.None /etc/init.d/softcam.OscamSmartcard' + null)
-				system('rm /etc/init.d/cardserver /etc/init.d/cardserver.None /etc/init.d/cardserver.OscamSmartcard' + null)
-				#system('update-rc.d -f softcam  remove' + null)
-				#system('update-rc.d -f cardserver remove' + null)
+				system('rm /etc/init.d/softcam.OscamSmartcard' + null)
+				system('rm /etc/init.d/cardserver.OscamSmartcard' + null)
+				self.initd()
 			system('rm -rf /tmp/data' + null)
 			system('rm -f /tmp/upgrade.log' + null)
 			popen('rm -rf /tmp/.oscam' + null)
@@ -848,6 +845,29 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			p.close()
 		return cccsrv,xc,cccuser,yc,ccconfig,zc,cccport
 
+	def initd(self):
+		if not fileExists('/etc/init.d/softcam.None'):
+			fd = file('/etc/init.d/softcam.None', 'w')
+			fd.write('#!/bin/sh\necho "Softcam is deactivated."\n')
+			fd.close()
+			system('chmod 755 /etc/init.d/softcam.None')
+		if not fileExists('/etc/init.d/cardserver.None'):
+			fd = file('/etc/init.d/cardserver.None', 'w')
+			fd.write('#!/bin/sh\necho "Cardserver is deactivated."\n')
+			fd.close()
+			system('chmod 755 /etc/init.d/cardserver.None')
+		system('rm -f /etc/init.d/softcam')
+		system('ln -s /etc/init.d/softcam.None /etc/init.d/softcam')
+		system('chmod 755 /etc/init.d/softcam')
+		system('rm -f /etc/init.d/cardserver')
+		system('ln -s /etc/init.d/cardserver.None /etc/init.d/cardserver')
+		system('chmod 755 /etc/init.d/cardserver')
+		if fileExists ('/etc/rc0.d/K20softcam'): 
+			os.system('update-rc.d -f softcam remove && update-rc.d -f cardserver remove')
+		if not fileExists('/etc/rc0.d/K09softcam'):
+			os.system('update-rc.d softcam stop 09 0 1 6 . start  60 2 3 4 5 .')
+			os.system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
+
 	def getIP(self):
 		return str(popen('ip route get 8.8.8.8 |cut -d " " -f8').read().strip())
 
@@ -856,10 +876,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		srv = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC8='
 		return info,srv
 
-
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
+		lastinfo += "10-12-2016" + x + _("update init.d start/stop") + "\n"
 		lastinfo += "17-09-2016" + x + _("update oscamsmartcard code") + "\n"
 		lastinfo += "11-09-2016" + x + _("update Redlight HD Card") + "\n"
 		lastinfo += "08-09-2016" + x + _("added ORF ICE p410 Card") + "\n"
@@ -867,7 +887,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		lastinfo += "08-09-2016" + x + _("this info added") + "\n" 
 		lastinfo += "17-06-2016" + x + _("added SRG V6 Card") + "\n" 
 		lastinfo += "09-06-2016" + x + _("added CI+") + "\n" 
-		lastinfo += "06-04-2016" + x + _("added default Reader 357 Mhz") + "\n" 
 		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
 		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
 
