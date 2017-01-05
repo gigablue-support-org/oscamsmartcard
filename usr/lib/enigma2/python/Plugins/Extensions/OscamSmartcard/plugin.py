@@ -602,17 +602,21 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return upgradeinfo
 
 	def currentversion(self):
-		if os.path.exists('/usr/bin/oscam_oscamsmartcard'):
-			system('chmod 755 /usr/bin/oscam_oscamsmartcard')
-			f = popen('/usr/bin/oscam_oscamsmartcard -V')
-			for line in f:
-				if 'Version:' in line:
-					line=line.strip().split()
-					currentversion= line[1]
-			f.close()
-		else:
-			currentversion = _("no installed oscamsmartcard found")
-		return currentversion
+		try:
+			if os.path.exists('/usr/bin/oscam_oscamsmartcard'):
+				system('chmod 755 /usr/bin/oscam_oscamsmartcard')
+				f = popen('/usr/bin/oscam_oscamsmartcard -V')
+				for line in f:
+					if 'Version:' in line:
+						line=line.strip().split()
+						currentversion= line[1]
+				f.close()
+			else:
+				currentversion = _("no installed oscamsmartcard found")
+			return currentversion
+		except:
+			currentversion = _("Error")
+			return currentversion
 
 	def checkallcams(self):
 		ignore =[
