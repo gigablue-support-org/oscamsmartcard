@@ -231,6 +231,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						camstartname='SoftcamManager'
 						config.plugins.OscamSmartcard.Camstart.value = "openmips"
 						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+					elif getImageDistro() =='teamblue':
+						camstartname='SoftcamManager'
+						config.plugins.OscamSmartcard.Camstart.value = "teamblue"
+						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
 					else:
 						self.close()
 					self.headers += _("Config path set automatically to") 	+ '\t: ' + config.plugins.OscamSmartcard.ConfigPath.value + "\n"
@@ -401,7 +405,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.savecamstart()
 		if getImageDistro() == 'openatv':
 			system ('/usr/bin/oscam_oscamsmartcard -b -c /usr/keys > /dev/null 2>&1')
-		elif getImageDistro() == 'openmips':
+		elif getImageDistro() == 'openmips' or getImageDistro() =='teamblue':
 			system ('/etc/init.d/softcam start')
 		else:
 			self.session.open(MessageBox, _("Oscam is not running\nunknown OS"), MessageBox.TYPE_INFO,10)
@@ -575,6 +579,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if getImageDistro() =='openmips':
 			if config.plugins.OscamSmartcard.emu.value:
 				emu='_emu'
+		if getImageDistro() =='teamblue':
+			if config.plugins.OscamSmartcard.emu.value:
+				emu='_emu'
 		archs = ['armv7l','mips','sh4','ppc','armv7ahf-vfp-neon']
 		if arch in archs:
 			downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + arch + emu + suffix
@@ -671,6 +678,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			if len(y) >0:
 				system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
 				system('rm -f /etc/tuxbox/config/oscam.*')
+		if getImageDistro() =='teamblue':
+			y = glob.glob("/etc/tuxbox/config/oscam.*")
+			if len(y) >0:
+				system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
+				system('rm -f /etc/tuxbox/config/oscam.*')
 
 	def makeclean(self):
 		a = self.checkallcams()
@@ -682,18 +694,15 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def savecamstart(self):
 		try:
-			if getImageDistro() =='openmips':
+			if getImageDistro() =='openmips' or getImageDistro() =='teamblue' :
 				system('/etc/init.d/softcam stop && /etc/init.d/cardserver stop')
 				self.initd()
-
 				system('rm -f /etc/init.d/cardserver.OscamSmartcard')
 				system('rm -f /etc/init.d/softcam.OscamSmartcard')
-
 				system('cp -f /tmp/data/softcam.OscamSmartcard /etc/init.d/softcam.OscamSmartcard')
 				system('cp -f /tmp/data/cardserver.OscamSmartcard /etc/init.d/cardserver.OscamSmartcard')
 				system('chmod 755 /etc/init.d/softcam.OscamSmartcard')
 				system('chmod 755 /etc/init.d/cardserver.OscamSmartcard')
-
 				system('rm -f /etc/init.d/softcam && rm -f /etc/init.d/cardserver')
 				system('ln -sf /etc/init.d/softcam.OscamSmartcard /etc/init.d/softcam')
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
@@ -752,7 +761,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			if getImageDistro() =='openatv':
 				system('rm -f /usr/keys/oscam.*' + null)
 				system('rm -f /etc/oscamsmartcard.emu' + null)
-			if getImageDistro() =='openmips':
+			if getImageDistro() =='openmips' or getImageDistro() =='teamblue':
 				system('rm -f /etc/tuxbox/config/oscam.*' + null)
 				system('rm /etc/init.d/softcam.OscamSmartcard' + null)
 				system('rm /etc/init.d/cardserver.OscamSmartcard' + null)
@@ -873,7 +882,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			os.system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
 
 	def getIP(self):
-		return str(popen('ip route get 8.8.8.8 |cut -d " " -f8').read().strip())
+		#return str(popen('ip route get 8.8.8.8 |cut -d " " -f7').read().strip())
+		return str(popen('hostname -i').read().strip())
 
 	def getdl(self):
 		info = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLmluZm8='
