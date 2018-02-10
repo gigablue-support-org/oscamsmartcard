@@ -29,7 +29,9 @@ def architectures():
 	return ossystem,kernelversion,hardwaretype,hostname
 
 arch = architectures()[2]
-extrainfo=(architectures()[3] +' - ' + architectures()[0] + ' - ' + architectures()[1]).title()
+#extrainfo=(architectures()[3] +' - ' + architectures()[0] + ' - ' + architectures()[1]).title()
+extrainfo=(architectures()[3]  + ' - ' + architectures()[1])
+
 
 lang = language.getLanguage()
 environ["LANGUAGE"] = lang[:2]
@@ -97,6 +99,7 @@ cardlist = [
 	("ORF_ICE_crypto", "ORF ICE Cryptoworks 0D95"),
 	("ORF_ICE_p410", "ORF p410 Cryptoworks 0D98"),
 	("ORF_ICE_irdeto", "ORF ICE Irdeto 0648"),
+	("ORF_ICE_irdeto650", "ORF ICE Irdeto 0650"),
 	("SRG-V2", "SRG V2"),
 	("SRG-V4", "SRG V4"),
 	("SRG-V5", "SRG V5"),
@@ -139,7 +142,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
   <widget name="HELPTEXT" position="670,518" size="544,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="HEADER" position="60,114" size="590,180" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="INFOTXT" position="60,518" size="590,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
-  <eLabel text="OscamSmartcard 2.2 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
+  <eLabel text="OscamSmartcard 2.3 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png" position="958,75" size="275,250" alphatest="blend" zPosition="2" />
 </screen>"""
 
@@ -344,11 +347,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				msginfo += "CCcam Import\t" + _("yes") + "\n"
 			else:
 				msginfo += "CCcam Import\t" + _("no") + "\n"
-		if getImageDistro() == 'openatv':
-			if config.plugins.OscamSmartcard.emu.value == True:
-				msginfo += "Oscam EMU\t" + _("yes") + "\n"
-			else:
-				msginfo += "Oscam EMU\t" + _("no") + "\n"
 		mm = ""
 		if self.currentversion()[0:5] == "oscam":
 			mm = "Binary\t" + _("file already exists and use it")
@@ -595,16 +593,18 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def newversion(self,arch):
 		upgradeinfo = _("Download not avaible")
 		if self.onlinecheck() == True:
-			upgfile = '/tmp/upgrade.log'
-			system('touch ' + upgfile)
-			system('wget -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[0]) + null )
-			file = open(upgfile, "r")
+			upgfile = '/tmp/version.zip'
+			system('wget -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[2]) + null )
+			popen('unzip -o -q -d /tmp ' + upgfile)
+			os.remove(upgfile)
+
+			file = open("/tmp/version.info", "r")
 			for line in file.readlines():
 				line = line.strip().split(',')
 				if line[0] == arch:
 					upgradeinfo = line[1]
 			file.close()
-			os.remove(upgfile)
+			os.remove("/tmp/version.info")
 			return upgradeinfo
 		return upgradeinfo
 
@@ -634,8 +634,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		'enigma2-plugin-softcams-mgcamd.config',
 		'enigma2-plugin-systemplugins-softcamstartup',
 		'enigma2-plugin-systemplugins-softcamstartup-src',
-		'softcam-feed-mipsel', #atv feed
-		'om-softcam-support'
+		'softcam-feed-mipsel',
+		'om-softcam-support',
+		'softcam-feed-universal'
 		]
 		liste=[]
 		f = popen('opkg list-installed |grep -i softcam')
@@ -888,11 +889,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def getdl(self):
 		info = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLmluZm8='
 		srv = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC8='
-		return info,srv
+		infoz= 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLnppcA=='
+		return info,srv,infoz
 
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
+		lastinfo += "27-01-2018" + x + _("added ORF 650, added 6.2 Support") + "\n"
 		lastinfo += "10-12-2016" + x + _("update init.d start/stop") + "\n"
 		lastinfo += "17-09-2016" + x + _("update oscamsmartcard code") + "\n"
 		lastinfo += "11-09-2016" + x + _("update Redlight HD Card") + "\n"
@@ -907,4 +910,4 @@ class OscamSmartcard(ConfigListScreen, Screen):
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 def Plugins(**kwargs):
-	return PluginDescriptor(name="Oscam Smartcard v2.2", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
+	return PluginDescriptor(name="Oscam Smartcard v2.3", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
