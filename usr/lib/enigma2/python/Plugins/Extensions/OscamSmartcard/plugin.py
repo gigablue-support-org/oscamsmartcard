@@ -92,6 +92,8 @@ cardlist = [
 	("V14_fast", "Sky V14 Fastmode"),
 	("HD01", "HD+ HD01 white"),
 	("HD02", "HD+ HD02 black"),
+	("HD03", "HD+ HD03"),
+	("HD04", "HD+ HD04"),
 	("I02-Beta", "I02 Beta"),
 	("I12-Beta", "I12 Beta"),
 	("I12-Nagra", "I12 Nagra"),
@@ -142,7 +144,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
   <widget name="HELPTEXT" position="670,518" size="544,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="HEADER" position="60,114" size="590,180" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="INFOTXT" position="60,518" size="590,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
-  <eLabel text="OscamSmartcard 2.3 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
+  <eLabel text="OscamSmartcard 2.4 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png" position="958,75" size="275,250" alphatest="blend" zPosition="2" />
 </screen>"""
 
@@ -348,13 +350,16 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			else:
 				msginfo += "CCcam Import\t" + _("no") + "\n"
 		mm = ""
-		if self.currentversion()[0:5] == "oscam":
-			mm = "Binary\t" + _("file already exists and use it")
-			if config.plugins.OscamSmartcard.oscambinary.value == "yes_binary_install":
-				if self.newversion(arch) > self.currentversion():
-					mm = "Binary\t" + _("file exists, becomes upgrade")
+		if self.hd34check() == True:
+			msginfo += "Binary\t" + "oscam r11400 special HD03/04" + "\n"
 		else:
-			mm = "Binary\t" + str( self.newversion(arch)).replace('-1.20-unstable_svn','') + " " + _("will be installed")	+ "\n"
+			if self.currentversion()[0:5] == "oscam":
+				mm = "Binary\t" + _("file already exists and use it")
+				if config.plugins.OscamSmartcard.oscambinary.value == "yes_binary_install":
+					if self.newversion(arch) > self.currentversion():
+						mm = "Binary\t" + _("file exists, becomes upgrade")
+			else:
+				mm = "Binary\t" + str( self.newversion(arch)).replace('-1.20-unstable_svn','') + " " + _("will be installed")	+ "\n"
 		if mm != "":
 			msginfo += mm + "\n" 
 		msginfo += "\n"
@@ -586,9 +591,23 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			#overwrite if Box is a WeTeKPLAY
 			if getMachineBrand() =='WeTeK':
 				downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + 'wetekplay' + suffix
+			if self.hd34check():
+				downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + arch + '_hd34' + suffix
 		else:
 			downloadurl = 'unknown_' + arch
 		return downloadurl
+
+	def hd34check(self):
+		hd34 = ['HD03','HD04']
+		if config.plugins.OscamSmartcard.internalReader0.value in hd34:
+			return True
+		if config.plugins.OscamSmartcard.internalReader1.value in hd34:
+			return True
+		if config.plugins.OscamSmartcard.externalReader0.value in hd34:
+			return True
+		if config.plugins.OscamSmartcard.externalReader1.value in hd34:
+			return True
+		return False
 
 	def newversion(self,arch):
 		upgradeinfo = _("Download not avaible")
@@ -895,6 +914,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
+		lastinfo += "18-02-2018" + x + _("added HD03/04 Support") + "\n"
 		lastinfo += "27-01-2018" + x + _("added ORF 650, added 6.2 Support") + "\n"
 		lastinfo += "10-12-2016" + x + _("update init.d start/stop") + "\n"
 		lastinfo += "17-09-2016" + x + _("update oscamsmartcard code") + "\n"
@@ -910,4 +930,4 @@ class OscamSmartcard(ConfigListScreen, Screen):
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 def Plugins(**kwargs):
-	return PluginDescriptor(name="Oscam Smartcard v2.3", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
+	return PluginDescriptor(name="Oscam Smartcard v2.4", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
