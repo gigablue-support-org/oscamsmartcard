@@ -1,8 +1,0 @@
-Package: enigma2-plugin-softcams-oscamsmartcard
-Version: 20180218
-Description: OscamSmartcard 2.4 - Oscam the easy way
-Section: base
-Architecture: mipsel
-Priority: optional
-Maintainer: Undertaker
-License: unknown

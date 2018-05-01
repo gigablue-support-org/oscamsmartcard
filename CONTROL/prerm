@@ -1,7 +1,0 @@
-#!/bin/sh
-echo "**************************************************"
-echo "* Uninstall of OscamSmartcard starts...          *"
-echo "**************************************************"
-echo "* Now kill any running OscamSmartcard!           *"
-killall -9 oscam_oscamsmartcard 2>/dev/null
-echo "**************************************************"
