@@ -17,6 +17,7 @@ import gettext, base64, os, time, glob, urllib2
 from os import environ, listdir, remove, rename, system, popen
 from Tools.Directories import fileExists, resolveFilename, SCOPE_LANGUAGE, SCOPE_PLUGINS
 from boxbranding import *
+from datetime import datetime
 
 plugin='[OscamSmartcard] '
 null =' >/dev/null 2>&1'
@@ -31,7 +32,6 @@ def architectures():
 arch = architectures()[2]
 #extrainfo=(architectures()[3] +' - ' + architectures()[0] + ' - ' + architectures()[1]).title()
 extrainfo=(architectures()[3]  + ' - ' + architectures()[1])
-
 
 lang = language.getLanguage()
 environ["LANGUAGE"] = lang[:2]
@@ -173,8 +173,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["INFOTXT"] = Label()
 		self["INFOTXT"].setText(_("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically"))
 		self.headers = (getMachineBrand() + ' - '+  getMachineName()+ ' - ' + getImageDistro().title() + ' ' + getImageVersion()) + " - " + extrainfo + "\n"
+		self.online = self.onlinecheck()
 
-		if  self.onlinecheck() == False:
+		if self.online == False:
 			list = []
 			self.headers = _("Error") + "\n"
 			self.headers += _("Your STB is not connected to the Internet") + "\n" + _("press color button or lame for exit")
@@ -196,6 +197,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				self["actions"] = ActionMap(["OkCancelActions","DirectionActions", "InputActions", "ColorActions", "SetupActions"], {"red": self.exit,"yellow": self.exit,"blue": self.exit,"green":self.exit,"ok": self.exit,"cancel": self.exit}, -1)
 				self.exit
 			else:
+				self.installedversion = self.getaktuell()
 				a=self.checkallcams()
 				anzahl = len(a)
 				if len(a)>0:
@@ -223,10 +225,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					self["INFOTXT"].setText( _("Press GREEN to remove all")   )
 					self["HELPTEXT"].setText("")
 				else:
-					self.createoscamsmartcarddata()
-					self.oscamsmartcarddata = "/tmp/data/"
-					self.downloadurl()
-					onlineavaible = self.newversion(arch)
+					try:
+						onlineavaible = self.newversion(arch)
+					except:
+						onlineavaible = _("Error")
 					list = []
 					if getImageDistro() =='openatv':
 						camstartname='Openatv System'
@@ -262,9 +264,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					cccport= self.cccamcheck()[6]
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCcam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
-					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.currentversion() + '\n' + _("online") + '\t: ' + onlineavaible )))
-					if getImageDistro() =='openatv' and arch =='mips':
-						list.append(getConfigListEntry(_("Install oscam EMU Version:"), config.plugins.OscamSmartcard.emu, _("INFORMATION: install Oscam Emu Version\n\nSoftcam.key included")))
+					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.installedversion + '\n' + _("online") + '\t: ' + onlineavaible )))
 					list.append(getConfigListEntry(_("Is a Ci+ Module installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.showNews, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
@@ -272,6 +272,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if not self.selectionChanged in self["config"].onSelectionChanged:
 						self["config"].onSelectionChanged.append(self.selectionChanged)
 					self.selectionChanged()
+					self.createoscamsmartcarddata()
+					self.oscamsmartcarddata = "/tmp/data/"
+					self.downloadurl()
 
 	def selectionChanged(self):
 		self["HELPTEXT"].setText(self["config"].getCurrent()[2])
@@ -353,15 +356,15 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if self.hd34check() == True:
 			msginfo += "Binary\t" + "oscam r11400 special HD03/04" + "\n"
 		else:
-			if self.currentversion()[0:5] == "oscam":
+			if self.installedversion[0:5] == "oscam":
 				mm = "Binary\t" + _("file already exists and use it")
 				if config.plugins.OscamSmartcard.oscambinary.value == "yes_binary_install":
-					if self.newversion(arch) > self.currentversion():
+					if self.newversion(arch) > self.installedversion:
 						mm = "Binary\t" + _("file exists, becomes upgrade")
 			else:
 				mm = "Binary\t" + str( self.newversion(arch)).replace('-1.20-unstable_svn','') + " " + _("will be installed")	+ "\n"
 		if mm != "":
-			msginfo += mm + "\n" 
+			msginfo += mm + "\n"
 		msginfo += "\n"
 		msginfo += _("Are the settings correct ?")
 		self.session.openWithCallback(self.resume,MessageBox,msginfo, MessageBox.TYPE_YESNO).setTitle(_("check your settings"))
@@ -413,7 +416,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		else:
 			self.session.open(MessageBox, _("Oscam is not running\nunknown OS"), MessageBox.TYPE_INFO,10)
 			self.close()
-		config.plugins.OscamSmartcard.save()        
+		config.plugins.OscamSmartcard.save()
 		configfile.save()
 		self.rmoscamsmartcarddata()
 		self.session.open(MessageBox, _("oscam install finished\nhave fun"), MessageBox.TYPE_INFO, 10).setTitle(_("done"))
@@ -424,8 +427,19 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.session.open(MessageBox,(_("Oscam Binary is not installed\nYou must this install") + "\n\n\tOK"  ), MessageBox.TYPE_ERROR,).setTitle(_("wrong Settings detected"))
 			return False
 
+	def getaktuell(self):
+		aktuell = _("no")
+		if os.path.exists("/usr/bin/oscam_oscamsmartcard"):
+			aktuell = popen("chmod 775 /usr/bin/oscam_oscamsmartcard && /usr/bin/oscam_oscamsmartcard -V | grep Version |awk '{print $2}'").read().strip()
+		if aktuell ==_("no"):
+			return aktuell
+		if "oscam" in aktuell:
+			return str(aktuell)
+		else:
+			self.getaktuell()
+
 	def createoscamsmartcarddata(self):
-		data = 'wget -O /tmp/data.zip '+ base64.b64decode(self.getdl()[1]) + 'data.zip ' + null
+		data = 'wget -T5 --no-check-certificate -O /tmp/data.zip '+ base64.b64decode(self.getdl()[1]) + 'data.zip ' + null
 		popen(data)
 		popen('unzip -o -q -d /tmp /tmp/data.zip')
 		popen('rm /tmp/data.zip')
@@ -565,7 +579,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def oscambinaryupdate(self):
 		if self.newversion(arch) != _("Download not avaible"):
 			system('killall -9 oscam_oscamsmartcard' + null)
-			system('wget -q -O /tmp/oscam.tar.gz ' + self.downloadurl() + ' ' + null)
+			system('wget -T5 --no-check-certificate -q -O /tmp/oscam.tar.gz ' + self.downloadurl() + ' ' + null)
 			system('tar -xzf /tmp/oscam.tar.gz -C /tmp' + null)
 			system('rm -f /usr/bin/oscam_oscamsmartcard' + null)
 			system('mv /tmp/oscam /usr/bin/oscam_oscamsmartcard' + null)
@@ -611,12 +625,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def newversion(self,arch):
 		upgradeinfo = _("Download not avaible")
-		if self.onlinecheck() == True:
+		if self.online == True:
 			upgfile = '/tmp/version.zip'
-			system('wget -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[2]) + null )
+			system('wget -T5 --no-check-certificate -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[2]) + ' ' + null )
 			popen('unzip -o -q -d /tmp ' + upgfile)
-			os.remove(upgfile)
-
 			file = open("/tmp/version.info", "r")
 			for line in file.readlines():
 				line = line.strip().split(',')
@@ -624,25 +636,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					upgradeinfo = line[1]
 			file.close()
 			os.remove("/tmp/version.info")
+			os.remove(upgfile)
 			return upgradeinfo
 		return upgradeinfo
-
-	def currentversion(self):
-		try:
-			if os.path.exists('/usr/bin/oscam_oscamsmartcard'):
-				system('chmod 755 /usr/bin/oscam_oscamsmartcard')
-				f = popen('/usr/bin/oscam_oscamsmartcard -V')
-				for line in f:
-					if 'Version:' in line:
-						line=line.strip().split()
-						currentversion= line[1]
-				f.close()
-			else:
-				currentversion = _("no installed oscamsmartcard found")
-			return currentversion
-		except:
-			currentversion = _("Error")
-			return currentversion
 
 	def checkallcams(self):
 		ignore =[
@@ -755,7 +751,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def onlinecheck(self):
 		try:
-			response=urllib2.urlopen(base64.b64decode('aHR0cDovLzE5Mi4xODUuNDEuMjc='),timeout=2)
+			response=urllib2.urlopen(base64.b64decode('aHR0cDovLzY5LjE5NS4xMjQuNTA='),timeout=10)
 			return True
 		except urllib2.URLError as err: pass
 		return False
@@ -807,7 +803,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		config.plugins.OscamSmartcard.externalReader1.value = "none"
 		config.plugins.OscamSmartcard.emu.value = False
 		config.plugins.OscamSmartcard.hasciplus.value = "no"
-		config.plugins.OscamSmartcard.save()        
+		config.plugins.OscamSmartcard.save()
 		configfile.save()
 		return
 
@@ -895,7 +891,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		system('rm -f /etc/init.d/cardserver')
 		system('ln -s /etc/init.d/cardserver.None /etc/init.d/cardserver')
 		system('chmod 755 /etc/init.d/cardserver')
-		if fileExists ('/etc/rc0.d/K20softcam'): 
+		if fileExists ('/etc/rc0.d/K20softcam'):
 			os.system('update-rc.d -f softcam remove && update-rc.d -f cardserver remove')
 		if not fileExists('/etc/rc0.d/K09softcam'):
 			os.system('update-rc.d softcam stop 09 0 1 6 . start  60 2 3 4 5 .')
@@ -906,14 +902,15 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return str(popen('hostname -i').read().strip())
 
 	def getdl(self):
-		info = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLmluZm8='
-		srv = 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC8='
-		infoz= 'aHR0cDovL3d3dy5naWdhYmx1ZS1zdXBwb3J0Lm9yZy9kb3dubG9hZC9vc2NhbXNtYXJ0Y2FyZC92ZXJzaW9uLnppcA=='
+		info  = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uaW5mbw=='
+		srv   = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkLw=='
+		infoz = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uemlw'
 		return info,srv,infoz
 
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
+		lastinfo += "11-07-2018" + x + _("download fix") + "\n"
 		lastinfo += "18-02-2018" + x + _("added HD03/04 Support") + "\n"
 		lastinfo += "27-01-2018" + x + _("added ORF 650, added 6.2 Support") + "\n"
 		lastinfo += "10-12-2016" + x + _("update init.d start/stop") + "\n"
@@ -921,9 +918,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		lastinfo += "11-09-2016" + x + _("update Redlight HD Card") + "\n"
 		lastinfo += "08-09-2016" + x + _("added ORF ICE p410 Card") + "\n"
 		lastinfo += "08-09-2016" + x + _("remove reboot from oscamsmartcard") + "\n"
-		lastinfo += "08-09-2016" + x + _("this info added") + "\n" 
-		lastinfo += "17-06-2016" + x + _("added SRG V6 Card") + "\n" 
-		lastinfo += "09-06-2016" + x + _("added CI+") + "\n" 
+		lastinfo += "08-09-2016" + x + _("this info added") + "\n"
+		lastinfo += "17-06-2016" + x + _("added SRG V6 Card") + "\n"
+		lastinfo += "09-06-2016" + x + _("added CI+") + "\n"
 		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
 		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
 
