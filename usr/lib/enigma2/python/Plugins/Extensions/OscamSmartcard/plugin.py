@@ -174,6 +174,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["INFOTXT"].setText(_("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically"))
 		self.headers = (getMachineBrand() + ' - '+  getMachineName()+ ' - ' + getImageDistro().title() + ' ' + getImageVersion()) + " - " + extrainfo + "\n"
 		self.online = self.onlinecheck()
+		self.createoscamsmartcarddata()
+		self.oscamsmartcarddata = "/tmp/data/"
+		self.downloadurl()
 
 		if self.online == False:
 			list = []
@@ -221,6 +224,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if not self.selectionChanged in self["config"].onSelectionChanged:
 						self["config"].onSelectionChanged.append(self.selectionChanged)
 					self.selectionChanged()
+					
+					
 					self["HEADER"].setText(self.headers)
 					self["INFOTXT"].setText( _("Press GREEN to remove all")   )
 					self["HELPTEXT"].setText("")
@@ -272,9 +277,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if not self.selectionChanged in self["config"].onSelectionChanged:
 						self["config"].onSelectionChanged.append(self.selectionChanged)
 					self.selectionChanged()
-					self.createoscamsmartcarddata()
-					self.oscamsmartcarddata = "/tmp/data/"
-					self.downloadurl()
+
 
 	def selectionChanged(self):
 		self["HELPTEXT"].setText(self["config"].getCurrent()[2])
@@ -722,7 +725,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('rm -f /etc/init.d/softcam && rm -f /etc/init.d/cardserver')
 				system('ln -sf /etc/init.d/softcam.OscamSmartcard /etc/init.d/softcam')
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
-
 			if getImageDistro() =='openatv':
 				system('killall -9 oscam_oscamsmartcard' + null)
 				system('rm -f /etc/oscamsmartcard.emu')
