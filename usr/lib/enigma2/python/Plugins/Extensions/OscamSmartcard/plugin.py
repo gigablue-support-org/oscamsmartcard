@@ -31,7 +31,8 @@ def architectures():
 
 arch = architectures()[2]
 #extrainfo=(architectures()[3] +' - ' + architectures()[0] + ' - ' + architectures()[1]).title()
-extrainfo=(architectures()[3]  + ' - ' + architectures()[1])
+#extrainfo=(architectures()[3]  + ' - ' + architectures()[1])
+extrainfo=(architectures()[3])
 
 lang = language.getLanguage()
 environ["LANGUAGE"] = lang[:2]
@@ -173,6 +174,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["INFOTXT"] = Label()
 		self["INFOTXT"].setText(_("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically"))
 		self.headers = (getMachineBrand() + ' - '+  getMachineName()+ ' - ' + getImageDistro().title() + ' ' + getImageVersion()) + " - " + extrainfo + "\n"
+		
 		self.online = self.onlinecheck()
 		self.createoscamsmartcarddata()
 		self.oscamsmartcarddata = "/tmp/data/"
@@ -267,7 +269,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					cccport= self.cccamcheck()[6]
 					if anzcc > 0 or anzus >0 or anz35 >0:
 						list.append(getConfigListEntry(( _("CCcam.cfg found. Import your settings") ), config.plugins.OscamSmartcard.cccam, ( _("Oscamsmartcard found ") + str(anzcc+anz35) + _(" Server and ") + str(anzus) + " User in CCcam.cfg\n" + str(anzcc) + " x CCcam-Server\t" + str(anz35) +' x Camd35 Server\n' + str(anzus) + ' x Userlines (Friends)\tShareport: ' +cccport  )))
-					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION: ' + _("install or update to the latest version") + '\n' +  _("installed")  + ' \t: ' + self.installedversion + '\n' + _("online") + '\t: ' + onlineavaible )))
+					list.append(getConfigListEntry(_("Oscam binary install"),config.plugins.OscamSmartcard.oscambinary,('INFORMATION:    ' + _("Versions Info") + '\n' +  _("installed")  + ' \t: ' + self.installedversion + '\n' + _("online") + '\t: ' + onlineavaible )))
 					list.append(getConfigListEntry(_("Is a Ci+ Module installed:"), config.plugins.OscamSmartcard.hasciplus, _("INFORMATION: please select your CI+ Modul\n\n")))
 					ConfigListScreen.__init__(self, list)
 					self["actions"] = ActionMap(["OkCancelActions", "DirectionActions", "InputActions", "ColorActions"], {"left": self.keyLeft,"down": self.keyDown,"up": self.keyUp,"right": self.keyRight,"red": self.exit,"yellow": self.showNews, "blue": self.rmconfig, "green": self.save,"cancel": self.exit}, -1)
@@ -636,7 +638,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			for line in file.readlines():
 				line = line.strip().split(',')
 				if line[0] == arch:
-					upgradeinfo = line[1]
+					upgradeinfo = line[1].replace("-unstable","")
 			file.close()
 			os.remove("/tmp/version.info")
 			os.remove(upgfile)
@@ -844,13 +846,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 								if servername == "IP":
 									servername=server.replace(".","-")
 								servername =  servername+"_"+str(xc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'CCcam-Server: '+ server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\n'
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'CCcam-Server: '+ server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
 							if protokoll=='cs357x':
 								yc +=1
 								if servername == "IP":
 									servername=server.replace(".","-")
 								servername = servername+"_"+str(yc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'Camd35-Server: ' + server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\n'
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'Camd35-Server: ' + server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
 							cccsrv += peer
 					elif line.startswith(userline):
 						zc=zc+1
