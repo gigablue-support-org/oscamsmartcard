@@ -16,7 +16,7 @@ from enigma import ePicLoad
 import gettext, base64, os, time, glob, urllib2
 from os import environ, listdir, remove, rename, system, popen
 from Tools.Directories import fileExists, resolveFilename, SCOPE_LANGUAGE, SCOPE_PLUGINS
-from boxbranding import *
+from boxbranding import getMachineBrand
 from datetime import datetime
 
 plugin='[OscamSmartcard] '
@@ -53,16 +53,16 @@ def translateBlock(block):
 	return block
 
 config.plugins.OscamSmartcard = ConfigSubsection()
-config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="openmips", choices = [
-				("openmips", "Script SoftCamstart (openMips)"),
-				("openatv", "Python SoftCamstart (openATV)")
+config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="initd", choices = [
+				("initd", "Script SoftCamstart (/etc/init.d)"),
+				("python", "Python SoftCamstart (enigma2)")
 				])
 config.plugins.OscamSmartcard.systemclean = ConfigSelection(default = True, choices = [
 				(True, ' ')
 				])
 config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [
-				("/usr/keys/", "/usr/keys/ (openATV)"),
-				("/etc/tuxbox/config/", "/etc/tuxbox/config/ (openMips)")
+				("/usr/keys/", "Config located in /usr/keys/"),
+				("/etc/tuxbox/config/", "Config located in /etc/tuxbox/config/")
 				])
 config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices = [
 				("83", _("83")),
@@ -235,17 +235,11 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					except:
 						onlineavaible = _("Error")
 					list = []
-					if getImageDistro() =='openatv':
-						camstartname='Openatv System'
-						config.plugins.OscamSmartcard.Camstart.value = "openatv"
+					if config.plugins.OscamSmartcard.Camstart.value == "python":
+						camstartname='Enigma2'
 						config.plugins.OscamSmartcard.ConfigPath.value = "/usr/keys/"
-					elif getImageDistro() =='openmips':
+					if config.plugins.OscamSmartcard.Camstart.value == "initd":
 						camstartname='SoftcamManager'
-						config.plugins.OscamSmartcard.Camstart.value = "openmips"
-						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
-					elif getImageDistro() =='teamblue':
-						camstartname='SoftcamManager'
-						config.plugins.OscamSmartcard.Camstart.value = "teamblue"
 						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
 					else:
 						self.close()
@@ -412,9 +406,9 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if config.plugins.OscamSmartcard.oscambinary.value == 'yes_binary_install':
 			self.oscambinaryupdate()
 		self.savecamstart()
-		if getImageDistro() == 'openatv':
+		if config.plugins.OscamSmartcard.Camstart.value == "python":
 			system ('/usr/bin/oscam_oscamsmartcard -b -c /usr/keys > /dev/null 2>&1')
-		elif getImageDistro() == 'openmips' or getImageDistro() =='teamblue':
+		elif config.plugins.OscamSmartcard.Camstart.value == "initd":
 			system ('/etc/init.d/softcam start')
 		else:
 			self.session.open(MessageBox, _("Oscam is not running\nunknown OS"), MessageBox.TYPE_INFO,10)
@@ -422,7 +416,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		config.plugins.OscamSmartcard.save()
 		configfile.save()
 		self.rmoscamsmartcarddata()
-		self.session.open(MessageBox, _("oscam install finished\nhave fun"), MessageBox.TYPE_INFO, 10).setTitle(_("done"))
+		self.session.open(MessageBox, _("Oscam install finished\nhave fun"), MessageBox.TYPE_INFO, 10).setTitle(_("done"))
 		self.close()
 
 	def configcheck(self):
@@ -593,15 +587,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		binary = 'oscam_oscamsmartcard'
 		suffix = '.tar.gz'
 		emu=''
-		if getImageDistro() =='openatv':
-			if config.plugins.OscamSmartcard.emu.value:
-				emu='_emu'
-		if getImageDistro() =='openmips':
-			if config.plugins.OscamSmartcard.emu.value:
-				emu='_emu'
-		if getImageDistro() =='teamblue':
-			if config.plugins.OscamSmartcard.emu.value:
-				emu='_emu'
+		emu='_emu'
 		archs = ['armv7l','mips','sh4','ppc','armv7ahf-vfp-neon','aarch64']
 		if arch =='aarch64':
 			emu=''
@@ -689,21 +675,14 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def makebackup(self):
 		dd = (time.strftime("%Y-%m-%d-%H-%M-%S"))
-		if getImageDistro() =='openatv':
-			x = glob.glob("/usr/keys/oscam.*")
-			if len(x) >0:
-				system('tar -czf /usr/keys/backup-oscamsmartcard-'+ dd +'.tar.gz /usr/keys/oscam.*')
-				system('rm -f /usr/keys/oscam.*')
-		if getImageDistro() =='openmips':
-			y = glob.glob("/etc/tuxbox/config/oscam.*")
-			if len(y) >0:
-				system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
-				system('rm -f /etc/tuxbox/config/oscam.*')
-		if getImageDistro() =='teamblue':
-			y = glob.glob("/etc/tuxbox/config/oscam.*")
-			if len(y) >0:
-				system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
-				system('rm -f /etc/tuxbox/config/oscam.*')
+		x = glob.glob("/usr/keys/oscam.*")
+		if len(x) >0:
+			system('tar -czf /usr/keys/backup-oscamsmartcard-'+ dd +'.tar.gz /usr/keys/oscam.*')
+			system('rm -f /usr/keys/oscam.*')
+		y = glob.glob("/etc/tuxbox/config/oscam.*")
+		if len(y) >0:
+			system('tar -czf /etc/tuxbox/config/backup-oscamsmartcard-'+ dd +'.tar.gz /etc/tuxbox/config/oscam.*')
+			system('rm -f /etc/tuxbox/config/oscam.*')
 
 	def makeclean(self):
 		a = self.checkallcams()
@@ -715,7 +694,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def savecamstart(self):
 		try:
-			if getImageDistro() =='openmips' or getImageDistro() =='teamblue' :
+			if config.plugins.OscamSmartcard.Camstart.value == "initd":
 				system('/etc/init.d/softcam stop && /etc/init.d/cardserver stop')
 				self.initd()
 				system('rm -f /etc/init.d/cardserver.OscamSmartcard')
@@ -727,7 +706,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('rm -f /etc/init.d/softcam && rm -f /etc/init.d/cardserver')
 				system('ln -sf /etc/init.d/softcam.OscamSmartcard /etc/init.d/softcam')
 				system('ln -sf /etc/init.d/cardserver.None /etc/init.d/cardserver')
-			if getImageDistro() =='openatv':
+			if config.plugins.OscamSmartcard.Camstart.value == "python":
 				system('killall -9 oscam_oscamsmartcard' + null)
 				system('rm -f /etc/oscamsmartcard.emu')
 				system('cp -f /tmp/data/oscamsmartcard.emu /etc/oscamsmartcard.emu')
@@ -778,10 +757,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.makebackup()
 			system('killall -9 oscam_oscamsmartcard ' + null)
 			system('rm /usr/bin/oscam_oscamsmartcard' + null)
-			if getImageDistro() =='openatv':
+			if config.plugins.OscamSmartcard.Camstart.value == "python":
 				system('rm -f /usr/keys/oscam.*' + null)
 				system('rm -f /etc/oscamsmartcard.emu' + null)
-			if getImageDistro() =='openmips' or getImageDistro() =='teamblue':
+			if config.plugins.OscamSmartcard.Camstart.value == "initd":
 				system('rm -f /etc/tuxbox/config/oscam.*' + null)
 				system('rm /etc/init.d/softcam.OscamSmartcard' + null)
 				system('rm /etc/init.d/cardserver.OscamSmartcard' + null)
@@ -796,7 +775,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def valuedefaultsettings(self):
 		config.plugins.OscamSmartcard.WebifPort.value = "83"
-		config.plugins.OscamSmartcard.Camstart.value = "openmips"
+		config.plugins.OscamSmartcard.Camstart.value = "initd"
 		config.plugins.OscamSmartcard.systemclean.value = True
 		config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
 		config.plugins.OscamSmartcard.oscambinary.value = "no_binary_install"
