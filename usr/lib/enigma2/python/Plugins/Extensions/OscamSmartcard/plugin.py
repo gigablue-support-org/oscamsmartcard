@@ -60,9 +60,9 @@ config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="initd", choice
 config.plugins.OscamSmartcard.systemclean = ConfigSelection(default = True, choices = [
 				(True, ' ')
 				])
-config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [
+config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/oscamsmartcard/", choices = [
 				("/usr/keys/", "Config located in /usr/keys/"),
-				("/etc/tuxbox/config/", "Config located in /etc/tuxbox/config/")
+				("/etc/tuxbox/config/oscamsmartcard/", "Config located in /etc/tuxbox/config/oscamsmartcard/")
 				])
 config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices = [
 				("83", _("83")),
@@ -208,7 +208,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				if len(a)>0:
 					list = []
 					self.headers = _("Error") + "\n"
-					self.headers += str(anzahl) + ' ' + _("valueless Softam found.")  + "\n"
+					self.headers += str(anzahl) + ' ' + _("obsolete Softcam(s) found.")  + "\n"
 					self.headers += _("Remove all first.\notherwise Oscamsmartcard will not start") + "\n"
 					i=0
 					zz = ""
@@ -240,7 +240,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						config.plugins.OscamSmartcard.ConfigPath.value = "/usr/keys/"
 					if config.plugins.OscamSmartcard.Camstart.value == "initd":
 						camstartname='SoftcamManager'
-						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+						config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/oscamsmartcard/"
 					else:
 						self.close()
 					self.headers += _("Config path set automatically to") 	+ '\t: ' + config.plugins.OscamSmartcard.ConfigPath.value + "\n"
@@ -421,7 +421,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def configcheck(self):
 		if not os.path.exists('/usr/bin/oscam_oscamsmartcard') and config.plugins.OscamSmartcard.oscambinary.value == "no_binary_install":
-			self.session.open(MessageBox,(_("Oscam Binary is not installed\nYou must this install") + "\n\n\tOK"  ), MessageBox.TYPE_ERROR,).setTitle(_("wrong Settings detected"))
+			self.session.open(MessageBox,(_("Oscam Binary is not installed\nYou must install this") + "\n\n\tOK"  ), MessageBox.TYPE_ERROR,).setTitle(_("wrong Settings detected"))
 			return False
 
 	def getaktuell(self):
@@ -761,7 +761,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				system('rm -f /usr/keys/oscam.*' + null)
 				system('rm -f /etc/oscamsmartcard.emu' + null)
 			if config.plugins.OscamSmartcard.Camstart.value == "initd":
-				system('rm -f /etc/tuxbox/config/oscam.*' + null)
+				system('rm -f /etc/tuxbox/config/oscamsmartcard/oscam.*' + null)
 				system('rm /etc/init.d/softcam.OscamSmartcard' + null)
 				system('rm /etc/init.d/cardserver.OscamSmartcard' + null)
 				self.initd()
@@ -777,7 +777,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		config.plugins.OscamSmartcard.WebifPort.value = "83"
 		config.plugins.OscamSmartcard.Camstart.value = "initd"
 		config.plugins.OscamSmartcard.systemclean.value = True
-		config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/"
+		config.plugins.OscamSmartcard.ConfigPath.value = "/etc/tuxbox/config/oscamsmartcard/"
 		config.plugins.OscamSmartcard.oscambinary.value = "no_binary_install"
 		config.plugins.OscamSmartcard.cccam.value = "no_cccam_import"
 		config.plugins.OscamSmartcard.internalReader0.value = "none"
