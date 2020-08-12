@@ -441,10 +441,12 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.getaktuell()
 
 	def createoscamsmartcarddata(self):
-		data = 'wget -T5 --no-check-certificate -O /tmp/data.zip '+ base64.b64decode(self.getdl()[1]) + 'data.zip ' + null
-		popen(data)
-		popen('unzip -o -q -d /tmp /tmp/data.zip')
-		popen('rm /tmp/data.zip')
+		try:
+			system('wget -T5 --no-check-certificate -O /tmp/data.zip ' + base64.b64decode(self.getdl()[1]).strip() + 'data.zip ' + null)
+			popen('unzip -o -q -d /tmp /tmp/data.zip')
+			popen('rm /tmp/data.zip')
+		except:
+			self.session.open(MessageBox, _("Error download oscam files"), MessageBox.TYPE_ERROR)
 
 	def rmoscamsmartcarddata(self):
 		popen('rm -rf /tmp/data')
@@ -605,12 +607,12 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		if arch =='aarch64':
 			emu=''
 		if arch in archs:
-			downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + arch + emu + suffix
+			downloadurl = base64.b64decode(self.getdl()[1]).strip() + binary + '_' + arch + emu + suffix
 			#overwrite if Box is a WeTeKPLAY
 			if getMachineBrand() =='WeTeK':
-				downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + 'wetekplay' + suffix
+				downloadurl = base64.b64decode(self.getdl()[1]).strip() + binary + '_' + 'wetekplay' + suffix
 			if self.hd34check():
-				downloadurl = base64.b64decode(self.getdl()[1]) + binary + '_' + arch + '_hd34' + suffix
+				downloadurl = base64.b64decode(self.getdl()[1]).strip() + binary + '_' + arch + '_hd34' + suffix
 		else:
 			downloadurl = 'unknown_' + arch
 		return downloadurl
@@ -631,7 +633,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		upgradeinfo = _("Download not avaible")
 		if self.online == True:
 			upgfile = '/tmp/version.zip'
-			system('wget -T5 --no-check-certificate -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[2]) + ' ' + null )
+			system('wget -T5 --no-check-certificate -O ' + upgfile + ' ' + base64.b64decode(self.getdl()[2]).strip() + ' ' + null )
 			popen('unzip -o -q -d /tmp ' + upgfile)
 			file = open("/tmp/version.info", "r")
 			for line in file.readlines():
@@ -754,7 +756,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def onlinecheck(self):
 		try:
-			response=urllib2.urlopen(base64.b64decode('aHR0cDovLzY5LjE5NS4xMjQuNTA='),timeout=10)
+			response=urllib2.urlopen(base64.b64decode('aHR0cHM6Ly9nb29nbGUuY29tCg=='),timeout=10)
 			return True
 		except urllib2.URLError as err: pass
 		return False
@@ -903,33 +905,25 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			os.system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
 
 	def getIP(self):
-		#return str(popen('ip route get 8.8.8.8 |cut -d " " -f7').read().strip())
-		return str(popen('hostname -i').read().strip())
+		try:
+			return str(popen("ip addr |grep inet |grep -v inet6 |grep -v 127.0. | awk '{print $2}'").read().strip().replace('/24',''))
+		except:
+			return "192.168.255.254"
 
 	def getdl(self):
-		info  = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uaW5mbw=='
-		srv   = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkLw=='
-		infoz = 'aHR0cDovL2NhbTRtZS5vcmcvb3Blbm1pcHMyL29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uemlw'
+		info  = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uaW5mbwo='
+		srv   = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkLwo='
+		infoz = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uemlwCg=='
 		return info,srv,infoz
+
 
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
-		lastinfo += "06-11-2020" + x + _("added dropbadcws on cccam import") + "\n"
-		lastinfo += "10-20-2018" + x + _("added bcm arm 64 bit CPU") + "\n"
-		lastinfo += "11-07-2018" + x + _("download fix") + "\n"
-		lastinfo += "18-02-2018" + x + _("added HD03/04 Support") + "\n"
-		lastinfo += "27-01-2018" + x + _("added ORF 650, added 6.2 Support") + "\n"
-		lastinfo += "10-12-2016" + x + _("update init.d start/stop") + "\n"
-		lastinfo += "17-09-2016" + x + _("update oscamsmartcard code") + "\n"
-		lastinfo += "11-09-2016" + x + _("update Redlight HD Card") + "\n"
-		lastinfo += "08-09-2016" + x + _("added ORF ICE p410 Card") + "\n"
-		lastinfo += "08-09-2016" + x + _("remove reboot from oscamsmartcard") + "\n"
-		lastinfo += "08-09-2016" + x + _("this info added") + "\n"
-		lastinfo += "17-06-2016" + x + _("added SRG V6 Card") + "\n"
-		lastinfo += "09-06-2016" + x + _("added CI+") + "\n"
-		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
-		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
+		lastinfo += "21.07.2020" + x + _("coming soon") + "\n"
+
+		lastinfo += "\nUndertaker"
+		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("INFO")
 
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
