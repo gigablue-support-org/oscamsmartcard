@@ -913,7 +913,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
-		lastinfo += "09-09-2020" + x + _("comming soon") + "\n"
+		lastinfo += "09-09-2020" + x + _("coming soon") + "\n"
 		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
 		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
 
