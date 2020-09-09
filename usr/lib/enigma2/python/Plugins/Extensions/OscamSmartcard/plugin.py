@@ -11,7 +11,6 @@ from Components.ConfigList import ConfigListScreen
 from Components.Label import Label
 from Components.Language import language
 from Components.Pixmap import Pixmap
-#from skin import parseColor
 from enigma import ePicLoad
 import gettext, base64, os, time, glob, urllib2
 from os import environ, listdir, remove, rename, system, popen
@@ -30,8 +29,6 @@ def architectures():
 	return ossystem,kernelversion,hardwaretype,hostname
 
 arch = architectures()[2]
-#extrainfo=(architectures()[3] +' - ' + architectures()[0] + ' - ' + architectures()[1]).title()
-#extrainfo=(architectures()[3]  + ' - ' + architectures()[1])
 extrainfo=(architectures()[3])
 
 lang = language.getLanguage()
