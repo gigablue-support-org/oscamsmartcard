@@ -145,6 +145,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
   <widget name="HELPTEXT" position="670,518" size="544,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="HEADER" position="60,114" size="590,180" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
   <widget name="INFOTXT" position="60,518" size="590,110" zPosition="1" font="Regular; 20" halign="left" backgroundColor="black" transparent="1" />
+  <eLabel text="OscamSmartcard 2.4 by arn354 and Undertaker" position="874,45" size="360,20" zPosition="1" font="Regular; 15" halign="right" backgroundColor="black" transparent="1" />
 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png" position="958,75" size="275,250" alphatest="blend" zPosition="2" />
 </screen>"""
 
@@ -441,15 +442,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			self.getaktuell()
 
 	def createoscamsmartcarddata(self):
-		try:
-			system('wget -T5 --no-check-certificate -O /tmp/data.zip ' + base64.b64decode(self.getdl()[1]).strip() + 'data.zip ' + null)
-			popen('unzip -o -q -d /tmp /tmp/data.zip')
-			popen('rm /tmp/data.zip')
-		except:
-			self.session.open(MessageBox, _("Error download oscam files"), MessageBox.TYPE_ERROR)
+		dldata=str(base64.b64decode(self.getdl()[1])).strip()+ "data.zip"
+		system('wget -T5 --no-check-certificate -O /tmp/data.zip ' + dldata +  ' ' + null)
+		system('unzip -o -q -d /tmp /tmp/data.zip')
+		system('rm /tmp/data.zip')
 
 	def rmoscamsmartcarddata(self):
-		popen('rm -rf /tmp/data')
+		system('rm -rf /tmp/data')
 
 	def saveoscamserver(self):
 		try:
@@ -583,7 +582,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 	def oscambinaryupdate(self):
 		if self.newversion(arch) != _("Download not avaible"):
 			system('killall -9 oscam_oscamsmartcard' + null)
-			system('wget -T5 --no-check-certificate -q -O /tmp/oscam.tar.gz ' + self.downloadurl() + ' ' + null)
+			system('wget -T5 --no-check-certificate -q -O /tmp/oscam.tar.gz ' + self.downloadurl().strip() + ' ' + null)
 			system('tar -xzf /tmp/oscam.tar.gz -C /tmp' + null)
 			system('rm -f /usr/bin/oscam_oscamsmartcard' + null)
 			system('mv /tmp/oscam /usr/bin/oscam_oscamsmartcard' + null)
@@ -756,7 +755,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def onlinecheck(self):
 		try:
-			response=urllib2.urlopen(base64.b64decode('aHR0cHM6Ly9nb29nbGUuY29tCg=='),timeout=10)
+			response=urllib2.urlopen(base64.b64decode('aHR0cDovLzY5LjE5NS4xMjQuNTA='),timeout=10)
 			return True
 		except urllib2.URLError as err: pass
 		return False
@@ -847,15 +846,13 @@ class OscamSmartcard(ConfigListScreen, Screen):
 								if servername == "IP":
 									servername=server.replace(".","-")
 								servername =  servername+"_"+str(xc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'CCcam-Server: '+ server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\ndropbadcws\t\t = 1\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
-
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'CCcam-Server: '+ server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\ncccversion\t\t = 2.3.0\nccckeepalive\t\t = 1\nccchop\t\t\t = 9\naudisabled\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
 							if protokoll=='cs357x':
 								yc +=1
 								if servername == "IP":
 									servername=server.replace(".","-")
 								servername = servername+"_"+str(yc)
-								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'Camd35-Server: ' + server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\n\ndropbadcws\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
-
+								peer = '\n[reader]\nlabel\t\t\t = ' +servername + '\ndescription\t\t = ' + 'Camd35-Server: ' + server + ':' + port + '\nprotocol\t\t = ' + protokoll + '\n' + 'device\t\t\t = '+ server + ',' + port + '\n' +'user\t\t\t = ' + user + '\npassword\t\t = ' + passwd + '\ngroup\t\t\t = 1\naudisabled\t\t = 1\ndisablecrccws\t\t= 1\ndisablecrccws_only_for\t = 09C4:000000;098C:000000\n'
 							cccsrv += peer
 					elif line.startswith(userline):
 						zc=zc+1
@@ -905,25 +902,20 @@ class OscamSmartcard(ConfigListScreen, Screen):
 			os.system('update-rc.d cardserver stop 09 0 1 6 . start  60 2 3 4 5 .')
 
 	def getIP(self):
-		try:
-			return str(popen("ip addr |grep inet |grep -v inet6 |grep -v 127.0. | awk '{print $2}'").read().strip().replace('/24',''))
-		except:
-			return "192.168.255.254"
+		return str(popen('ip address |grep -v "inet6" |grep -v "127" |grep inet |cut -d " " -f6').read().strip().replace('/24',''))
 
 	def getdl(self):
-		info  = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uaW5mbwo='
-		srv   = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkLwo='
-		infoz = 'aHR0cDovL29zYy5pZHRlLmV1L29zY2Ftc21hcnRjYXJkL3ZlcnNpb24uemlwCg=='
+		info  = 'aHR0cDovL29zYy50ZWFtYmx1ZS50ZWNoL29zYy92ZXJzaW9uLmluZm8gCg=='
+		srv   = 'aHR0cDovL29zYy50ZWFtYmx1ZS50ZWNoL29zYy8K'
+		infoz = 'aHR0cDovL29zYy50ZWFtYmx1ZS50ZWNoL29zYy92ZXJzaW9uLnppcAo='
 		return info,srv,infoz
-
 
 	def showNews(self):
 		lastinfo =  ""
 		x = " : "
-		lastinfo += "21.07.2020" + x + _("coming soon") + "\n"
-
-		lastinfo += "\nUndertaker"
-		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("INFO")
+		lastinfo += "09-09-2020" + x + _("comming soon") + "\n"
+		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
+		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
 
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
