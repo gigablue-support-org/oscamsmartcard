@@ -670,7 +670,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return liste
 
 	def readercheck(self):
-		sci0 = 'not installed';
+		sci0 = 'not installed'
 		sci1 = sci0
 		usb0 = sci0
 		usb1 = sci0
@@ -810,10 +810,22 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		return
 
 	def cccamcheck(self):
-		cccsrv='';cccuser='';ccconfig='';cccport='12000'
-		xc=0;yc=0;zc=0
+		cccsrv=''
+		cccuser=''
+		ccconfig=''
+		cccport='12000'
+		xc=0
+		yc=0
+		zc=0
 		if os.path.exists('/etc/CCcam.cfg'):
-			i=0;C='C';c='c';y=0; F='F';f='f';l='l';L='L'
+			i=0
+			C='C'
+			c='c'
+			y=0
+			F='F'
+			f='f'
+			l='l'
+			L='L'
 			cclines= ('c:','C:')
 			camd35lines = ('l:','L:')
 			userline = ('f','F')
@@ -824,15 +836,19 @@ class OscamSmartcard(ConfigListScreen, Screen):
 				if line.startswith((c,C,l,L,F,f,'SERVER LISTEN PORT')):
 					line=line.replace("\t"," ").replace(" :",":").replace(": ",":").replace(" :",":").replace(": ",":").replace("  "," ")
 					if line.startswith(cclines) or line.startswith(camd35lines):
-						if line.startswith(cclines) :protokoll='cccam'
-						if line.startswith(camd35lines) :protokoll='cs357x'
+						if line.startswith(cclines) :
+							protokoll='cccam'
+						if line.startswith(camd35lines) :
+							protokoll='cs357x'
 						line = line.strip().split(":")
 						line = line[1]
 						line = line.split()
 						if len(line)>3:
 							i=i+1
 							server = line[0]
-							port = line[1];user = line[2];passwd = line[3]
+							port = line[1]
+							user = line[2]
+							passwd = line[3]
 							parts = server.split(".")
 							end = str(parts[len(parts)-1])
 							if "0" in end or "1" in end or "2" in end or "3" in end or "4" in end or "5" in end or "6" in end or "7" in end or "8" in end or "9" in end:
@@ -858,7 +874,8 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						line = line[1]
 						line = line.split()
 						if len(line)>1:
-							cuser = line[0];cpass = line[1]
+							cuser = line[0]
+							cpass = line[1]
 							user= '\n[account]\nuser\t\t\t = ' + line[0] + '\npwd\t\t\t = ' +line[1] + '\nuniq\t\t\t = 3\ngroup\t\t\t = 1\n'
 							cccuser += user
 					elif line.startswith('SERVER LISTEN PORT'):
