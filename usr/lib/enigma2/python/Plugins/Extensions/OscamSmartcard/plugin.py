@@ -12,7 +12,12 @@ from Components.Label import Label
 from Components.Language import language
 from Components.Pixmap import Pixmap
 from enigma import ePicLoad
-import gettext, base64, os, time, glob, urllib2
+import gettext
+import base64
+import os
+import time
+import glob
+import urllib2
 from os import environ, listdir, remove, rename, system, popen
 from Tools.Directories import fileExists, resolveFilename, SCOPE_LANGUAGE, SCOPE_PLUGINS
 from boxbranding import *
