@@ -182,7 +182,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self["INFOTXT"] = Label()
 		self["INFOTXT"].setText(_("INFORMATION: make your selection and press GREEN\nAll config files are backed up automatically"))
 		self.headers = (getMachineBrand() + ' - ' + getMachineName() + ' - ' + getImageDistro().title() + ' ' + getImageVersion()) + " - " + extrainfo + "\n"
-		
+
 		self.online = self.onlinecheck()
 		self.createoscamsmartcarddata()
 		self.oscamsmartcarddata = "/tmp/data/"
@@ -762,7 +762,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 
 	def onlinecheck(self):
 		return True
-	
+
 	def exit(self):
 		system('rm -rf /tmp/data')
 		for x in self["config"].list:
