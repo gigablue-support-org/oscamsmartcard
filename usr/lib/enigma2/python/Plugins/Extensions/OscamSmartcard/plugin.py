@@ -26,12 +26,14 @@ from datetime import datetime
 plugin = '[OscamSmartcard] '
 null = ' >/dev/null 2>&1'
 
+
 def architectures():
 	hardwaretype = popen('uname -m').read().strip()
 	hostname = popen('uname -n').read().strip()
 	kernelversion = popen('uname -r').read().strip()
 	ossystem = popen('uname -s').read().strip()
 	return ossystem, kernelversion, hardwaretype, hostname
+
 
 arch = architectures()[2]
 extrainfo = (architectures()[3])
@@ -42,17 +44,20 @@ gettext.bindtextdomain("enigma2", resolveFilename(SCOPE_LANGUAGE))
 gettext.textdomain("enigma2")
 gettext.bindtextdomain("OscamSmartcard", "%s%s" % (resolveFilename(SCOPE_PLUGINS), "Extensions/OscamSmartcard/locale/"))
 
+
 def _(txt):
 	t = gettext.dgettext("OscamSmartcard", txt)
 	if t == txt:
 		t = gettext.gettext(txt)
 	return t
 
+
 def translateBlock(block):
 	for x in TranslationHelper:
 		if block.__contains__(x[0]):
 			block = block.replace(x[0], x[1])
 	return block
+
 
 config.plugins.OscamSmartcard = ConfigSubsection()
 config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="openmips", choices=[
@@ -129,6 +134,7 @@ config.plugins.OscamSmartcard.internalReader0 = ConfigSelection(default="none", 
 config.plugins.OscamSmartcard.internalReader1 = ConfigSelection(default="none", choices=cardlist)
 config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", choices=cardlist)
 config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices=cardlist)
+
 
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin = """<screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="black">
@@ -279,7 +285,6 @@ class OscamSmartcard(ConfigListScreen, Screen):
 					if not self.selectionChanged in self["config"].onSelectionChanged:
 						self["config"].onSelectionChanged.append(self.selectionChanged)
 					self.selectionChanged()
-
 
 	def selectionChanged(self):
 		self["HELPTEXT"].setText(self["config"].getCurrent()[2])
@@ -932,7 +937,10 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		lastinfo += "\nwww.gigablue-support.org\nUndertaker"
 		self.session.open(MessageBox, lastinfo, MessageBox.TYPE_INFO).setTitle("Oscamsmartcard News")
 
+
 def main(session, **kwargs):
 	session.open(OscamSmartcard, "/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
+
+
 def Plugins(**kwargs):
 	return PluginDescriptor(name="Oscam Smartcard v2.4", description=_("Configuration tool for OScam"), where=PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
