@@ -55,34 +55,34 @@ def translateBlock(block):
 	return block
 
 config.plugins.OscamSmartcard = ConfigSubsection()
-config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="openmips", choices = [
+config.plugins.OscamSmartcard.Camstart = ConfigSelection(default="openmips", choices=[
 				("openmips", "Script SoftCamstart (openMips)"),
 				("openatv", "Python SoftCamstart (openATV)")
 				])
-config.plugins.OscamSmartcard.systemclean = ConfigSelection(default = True, choices = [
+config.plugins.OscamSmartcard.systemclean = ConfigSelection(default=True, choices=[
 				(True, ' ')
 				])
-config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices = [
+config.plugins.OscamSmartcard.ConfigPath = ConfigSelection(default="/etc/tuxbox/config/", choices=[
 				("/usr/keys/", "/usr/keys/ (openATV)"),
 				("/etc/tuxbox/config/", "/etc/tuxbox/config/ (openMips)")
 				])
-config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices = [
+config.plugins.OscamSmartcard.WebifPort = ConfigSelection(default="83", choices=[
 				("83", _("83")),
 				("8888", _("8888"))
 				])
-config.plugins.OscamSmartcard.oscambinary = ConfigSelection(default="no_binary_install", choices = [
+config.plugins.OscamSmartcard.oscambinary = ConfigSelection(default="no_binary_install", choices=[
 				("no_binary_install", _("No")),
 				("yes_binary_install", _("Yes"))
 				])
-config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="no_cccam_import", choices = [
+config.plugins.OscamSmartcard.cccam  = ConfigSelection(default="no_cccam_import", choices=[
 				("no_cccam_import", _("No")),
 				("yes_cccam_import", _("Yes"))
 				])
-config.plugins.OscamSmartcard.emu  = ConfigSelection(default= False, choices = [
+config.plugins.OscamSmartcard.emu  = ConfigSelection(default=False, choices=[
 				(False, _("No")),
 				(True, _("Yes"))
 				])
-config.plugins.OscamSmartcard.hasciplus  = ConfigSelection(default="no", choices = [
+config.plugins.OscamSmartcard.hasciplus  = ConfigSelection(default="no", choices=[
 				("no", _("No")),
 				("ciplusV13", _("CI+ V13")),
 				("ciplusV14", _("CI+ V14"))
@@ -125,10 +125,10 @@ cardlist = [
 	("none", _("None"))
 	]
 
-config.plugins.OscamSmartcard.internalReader0 = ConfigSelection(default="none", choices = cardlist)
-config.plugins.OscamSmartcard.internalReader1 = ConfigSelection(default="none", choices = cardlist)
-config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", choices = cardlist)
-config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices = cardlist)
+config.plugins.OscamSmartcard.internalReader0 = ConfigSelection(default="none", choices=cardlist)
+config.plugins.OscamSmartcard.internalReader1 = ConfigSelection(default="none", choices=cardlist)
+config.plugins.OscamSmartcard.externalReader0 = ConfigSelection(default="none", choices=cardlist)
+config.plugins.OscamSmartcard.externalReader1 = ConfigSelection(default="none", choices=cardlist)
 
 class OscamSmartcard(ConfigListScreen, Screen):
 	skin ="""<screen name="OscamSmartcard-Setup" position="center,center" size="1280,720" flags="wfNoBorder" backgroundColor="black">
@@ -151,7 +151,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 <ePixmap pixmap="/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png" position="958,75" size="275,250" alphatest="blend" zPosition="2" />
 </screen>"""
 
-	def __init__(self, session, args = None, picPath = None):
+	def __init__(self, session, args=None, picPath=None):
 		self.config_lines = []
 		Screen.__init__(self, session)
 		self.session = session
@@ -218,7 +218,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 						title = a[i].replace("enigma2-plugin-softcams-",'')
 						desc = a[i]
 						xx = str(i)
-						xx = ConfigSelection(default="x", choices = [("x"),("x")])
+						xx = ConfigSelection(default="x", choices=[("x"),("x")])
 						list.append(getConfigListEntry(str(i+1) + ".)  " + title, xx, ""))
 						zz += title + "-" +desc
 						i = i + 1
@@ -301,7 +301,7 @@ class OscamSmartcard(ConfigListScreen, Screen):
 		self.PicLoad.setPara([self["oscamsmartcardhelperimage"].instance.size().width(),self["oscamsmartcardhelperimage"].instance.size().height(),self.Scale[0],self.Scale[1],0,1,"#20000000"])
 		self.PicLoad.startDecode(self.GetPicturePath())
 
-	def DecodePicture(self, PicInfo = ""):
+	def DecodePicture(self, PicInfo=""):
 		ptr = self.PicLoad.getData()
 		self["oscamsmartcardhelperimage"].instance.setPixmap(ptr)
 
@@ -935,4 +935,4 @@ class OscamSmartcard(ConfigListScreen, Screen):
 def main(session, **kwargs):
 	session.open(OscamSmartcard,"/usr/lib/enigma2/python/Plugins/Extensions/OscamSmartcard/images/oscamsmartcard.png")
 def Plugins(**kwargs):
-	return PluginDescriptor(name="Oscam Smartcard v2.4", description=_("Configuration tool for OScam"), where = PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
+	return PluginDescriptor(name="Oscam Smartcard v2.4", description=_("Configuration tool for OScam"), where=PluginDescriptor.WHERE_PLUGINMENU, icon="plugin.png", fnc=main)
